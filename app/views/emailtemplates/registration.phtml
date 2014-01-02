@@ -1,0 +1,17 @@
+<html>
+<body>
+Доброго дня!<br /><br />
+
+Ваш email було використано для реєстрації на ресурсі <?=$server?>.<br />
+Для підтвердження реєстрації будь ласка перейдіть <a href="<?=$server?>/user/confirmemail?id=<?=urlencode($user->id)?>&code=<?=urlencode($user->getVerificationCode())?>">сюди</a> або відкрийте наступне посилання в бровзері:<br /><br />
+
+<?=$server?>/user/confirmemail?id=<?=urlencode($user->id)?>&code=<?=urlencode($user->getVerificationCode())?><br /><br />
+
+Наведений лінк діє 5 годин. Після цього Ваш аккаунт автоматично деактивується.<br /><br />
+
+Якщо Ви не реєстрували Ваш email проігноруйте цей лист.<br /><br />
+
+Дякую,<br />
+Адміністрація
+</body>
+</html>
