@@ -17,40 +17,53 @@ class UserController extends \Phalcon\Mvc\Controller {
 		$emailRegistered = false;
 		$captcha = null;
 		$form = null;
+
 		if ($this->getDI()->getRequest()->isPost()) {
 			$form = new UserForm\SignupForm();
 			$captcha = new Captcha\Captcha($this->getDI()->get('config')->recaptcha);
 			$newUser = new Users();
+			$newUsersEmails = new UsersEmails();
+			$emailVerification = new UserEmailVerifications();
+
 			if ($form->isValid($this->getDI()->getRequest()->getPost(), $newUser)
 					&& $captcha->checkAnswer($this->getDI()->getRequest())
-					&& !($emailRegistered = Users::isEmailRegistered($newUser->email))) {
+					&& !($emailRegistered = UsersEmails::isEmailRegistered($newUser->email))) {
+				// create new user
 				$newUser->create();
+				// create new user email
+				$newUsersEmails->create(array('user_id' => $newUser->id, 'email' => $newUser->email));
+				// create verification data for new user
+				$emailVerification->create(array('email_id' => $newUsersEmails->id));
 				//email validation
 				$email = new Mail\Registration();
-				$email->send($newUser, $this->getDI()->get('config')->application->fromEmail, $this->getDI()->get('config')->application->baseUri);
-				//phone validation
+				$email->send($emailVerification, $this->getDI()->get('config')->application->fromEmail, $this->getDI()->get('config')->application->baseUri);
+				// phone validation
 				$this->dispatcher->forward(array(
 						"controller" => "user",
 						"action" => "signin" ));
 				return;
 			}
+
 			else if ($emailRegistered) {
 				$this->view->setVar('emailRegistered', true);
 			}
 		}
+
 		if ($captcha && $form) {
 			$this->view->setVars(array('captcha' => $captcha, 'form' => $form));
 			$this->view->form->get('password')->clear();
 			$this->view->form->get('confirmPassword')->clear();
 		}
+
 		$this->dispatcher->forward(array(
 				"controller" => "user",
 				"action" => "signup" ));
+
 	}
 
 	public function initverifyAction() {
-		$form = new UserForm\SignupForm());
-		$captcha = new Captcha\Captcha($this->getDI()->get('config')->recaptcha));
+		$form = new UserForm\SignupForm();
+		$captcha = new Captcha\Captcha($this->getDI()->get('config')->recaptcha);
 		if ($this->getDI()->getRequest()->isPost()) {
 			
 		}

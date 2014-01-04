@@ -12,7 +12,7 @@ class SignupForm extends \Phalcon\Forms\Form {
 						'message' => 'The username is required')),
 				new \Phalcon\Validation\Validator\StringLength(array(
 						'max' => 70,
-						'min' => 4,
+						'min' => 3,
 						'messageMaximum' => 'This name is too long. Please, select another one.',
 						'messageMinimum' => 'This name is too short. Please, select another one.' )) ));
 		$this->add($element);
