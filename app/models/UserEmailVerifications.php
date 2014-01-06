@@ -2,23 +2,36 @@
 
 class UserEmailVerifications extends \Phalcon\Mvc\Model {
 
-	protected $verification_code;
+	protected $_secure_verification_code;
 
 	public function create($data = array(), $whiteList = array()) {
+// error_log(print_r(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS),true));
 		if (count($data)) $this->assign($data);
-		$security = new Phalcon\Security();
+		$this->email_id = $this->email_id;
 		$this->getVerificationCode();
-		$this->salt = $security->getSaltBytes();
 		$this->created = time();
 		parent::create($data, $whiteList);
 	}
 
 	public function getVerificationCode() {
-		if (!$this->verification_code) {
-			$security = new Phalcon\Security();
-			$this->verification_code = $security->hash(md5(microtime(true)), 10);
+		$security = new Phalcon\Security();
+		if (!isset($this->verification_code)) {
+			$this->salt = $security->getSaltBytes();
+			$this->verification_code = md5(microtime(true));
 		}
-		return $this->verification_code;
+		if (!$this->_secure_verification_code) {
+			$this->_secure_verification_code = $security->hash($this->verification_code.$this->salt, 10);
+		}
+		return $this->_secure_verification_code;
 	}
 
+	public function verifyCode($verification_code) {
+		if ($this->created - time() > 18000) return false;
+		$security = new Phalcon\Security();
+		return $security->checkHash($this->verification_code.$this->salt, $verification_code);
+	}
+
+	public function loadVerificationObjectForEmail($email) {
+		return self::find(array('email_id=:email_id:','bind'=>array('email_id'=>$email->id) ));
+	}
 }

@@ -25,11 +25,12 @@ class UserController extends \Phalcon\Mvc\Controller {
 
 			if ($form->isValid($this->getDI()->getRequest()->getPost(), $newUser)
 					&& $captcha->checkAnswer($this->getDI()->getRequest())
-					&& !($emailRegistered = UsersEmails::isEmailRegistered($newUser->email))) {
+					) {
+					// && !($emailRegistered = UsersEmails::isEmailRegistered($newUser->email))) {
 				// create new user
 				$newUser->create();
 				// send verification data to primary email
-				$newUser->getPrimaryEmail()->sendVerifyEmail($this->getDI()->get('config'));
+				$newUser->getPrimaryEmail()->sendVerifyEmail($newUser, $this->getDI()->get('config'));
 
 				// phone validation
 				$this->dispatcher->forward(array(
