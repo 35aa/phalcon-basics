@@ -5,9 +5,7 @@ class UserEmailVerifications extends \Phalcon\Mvc\Model {
 	protected $_secure_verification_code;
 
 	public function create($data = array(), $whiteList = array()) {
-// error_log(print_r(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS),true));
 		if (count($data)) $this->assign($data);
-		$this->email_id = $this->email_id;
 		$this->getVerificationCode();
 		$this->created = time();
 		parent::create($data, $whiteList);
