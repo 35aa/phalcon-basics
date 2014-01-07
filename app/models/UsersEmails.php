@@ -34,7 +34,7 @@ class UsersEmails extends \Phalcon\Mvc\Model {
 		if ($this->verificationObject) return $this->verificationObject;
 		$emailVerificationTable = new UserEmailVerifications();
 		foreach ($emailVerificationTable->loadVerificationObjectForEmail($this) as $verificationObject) {
-			if ($verificationObject->created + 18000 > time()) {
+			if ($verificationObject->created + UserEmailVerifications::VERIFICATION_CODE_LIFESPAN > time()) {
 				$this->verificationObject = $verificationObject;
 				break;
 			}

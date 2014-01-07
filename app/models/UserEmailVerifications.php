@@ -2,6 +2,8 @@
 
 class UserEmailVerifications extends \Phalcon\Mvc\Model {
 
+	const VERIFICATION_CODE_LIFESPAN = 18000; // 5 hours
+
 	protected $_secure_verification_code;
 
 	public function create($data = array(), $whiteList = array()) {
@@ -24,7 +26,7 @@ class UserEmailVerifications extends \Phalcon\Mvc\Model {
 	}
 
 	public function verifyCode($verification_code) {
-		if ($this->created - time() > 18000) return false;
+		if ($this->created - time() > self::VERIFICATION_CODE_LIFESPAN) return false;
 		$security = new Phalcon\Security();
 		return $security->checkHash($this->verification_code.$this->salt, $verification_code);
 	}
