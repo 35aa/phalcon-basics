@@ -41,19 +41,33 @@ class Users extends \Phalcon\Mvc\Model {
 	}
 
 	public function getEmails() {
+		if (!count($this->_emails)) {
+			$usersEmails = new UsersEmails();
+			$emails = $usersEmails->getEmailsForUser($this->id);
+			$this->_emails = $emails;
+		}
 		return $this->_emails;
 	}
 
-	// public function verifyUserByIdAndCode($id, $code) {
-	// 	$user = self::findFirst(array(
-	// 			'id=:id: and created + 18000 > unix_timestamp() and verified is null',
-	// 			'bind'=>array('id'=>$id) ));
-	// 	if (!$user) return;
-	// 	$security = new Phalcon\Security();
-	// 	if (!$security->checkHash($user->email.$user->name, $code)) return;
-	// 	$user->verified = time();
-	// 	$user->save();
-	// 	return $user;
-	// }
+	public function verifyUserByIdAndCode($id, $code) {
+		$user = self::findFirst(array('id=:id:', 'bind'=>array('id'=>$id)));
+		if (!$user) return;
+		// get all user emails
+		$userEmails = $user->getEmails();
+		foreach ($userEmails as $email) {
+			if (!$email->verified) {
+				if ($email->verify($code)) {
+					// set user as active
+					$user->setUserActive();
+				}
+			}
+		}
+		return $user;
+	}
+
+	public function setUserActive() {
+		$this->active = 1;
+		$this->save();
+	}
 
 }

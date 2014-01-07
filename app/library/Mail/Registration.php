@@ -8,21 +8,20 @@ class Registration extends Mail {
 
 	public function send($user, $from, $server) {
 		// get setTo email
-		$usersEmails = new \UsersEmails();
-		$userEmail = $usersEmails->getEmailByEmailID($user->email_id);
-		$this->setTo(array($userEmail->email));
+		$this->setTo(array($user->getPrimaryEmail()->email));
 		$this->setFrom($from);
 		$this->setReplyTo($from);
 		$this->setSubject(self::SUBJECT);
-		
-		$this->addBody($server, $user);
+
+		$this->addBody($server, $user->getPrimaryEmail());
 		$this->sendEmail();
 	}
 
-	public function addBody($server, $verification) {
+	public function addBody($server, $primaryEmail) {
 		// Passing variables to the views, these will be created as local variables
 		$this->view->setVar('server', $server);
-		$this->view->setVar('verification', $verification);
+		$primaryEmail->createVerificationObject();
+		$this->view->setVar('primaryEmail', $primaryEmail);
 
 		$this->setContent($this->view->render('emailtemplates/registration', array()));
 	}

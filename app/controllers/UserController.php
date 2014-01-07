@@ -29,7 +29,7 @@ class UserController extends \Phalcon\Mvc\Controller {
 				// create new user
 				$newUser->create();
 				// send verification data to primary email
-				$newUser->getPrimaryEmail()->sendVerifyEmail($this->getDI()->get('config'));
+				$newUser->getPrimaryEmail()->sendVerifyEmail($newUser, $this->getDI()->get('config'));
 
 				// phone validation
 				$this->dispatcher->forward(array(

@@ -2,19 +2,18 @@
 
 class UsersEmails extends \Phalcon\Mvc\Model {
 
+	protected $verificationObject;
+
 	public function create($data = array(), $whiteList = array()) {
 		if (count($data)) $this->assign($data);
 		$this->created = time();
 		parent::create($data, $whiteList);
 	}
 
-	public function sendVerifyEmail($config) {
-		// create verification data for new user
-		$emailVerification = new UserEmailVerifications();
-		$emailVerification->create(array('email_id' => $this->id));
+	public function sendVerifyEmail($user, $config) {
 		//email validation
 		$email = new Mail\Registration();
-		$email->send($emailVerification, $config->application->fromEmail, $config->application->baseUri);
+		$email->send($user, $config->application->fromEmail, $config->application->baseUri);
 	}
 
 	public function getEmailByEmailID($email_id) {
@@ -23,6 +22,40 @@ class UsersEmails extends \Phalcon\Mvc\Model {
 
 	public static function isEmailRegistered($email) {
 		return self::findFirst(array('email = :email:', 'bind' => array('email' => $email))) != null;
+	}
+
+	public function createVerificationObject() {
+		$this->verificationObject = new UserEmailVerifications();
+		$this->verificationObject->create(array('email_id' => $this->id));
+	}
+
+	public function getVerificationObject() {
+		// create verification data for new user
+		if ($this->verificationObject) return $this->verificationObject;
+		$emailVerificationTable = new UserEmailVerifications();
+		foreach ($emailVerificationTable->loadVerificationObjectForEmail($this) as $verificationObject) {
+			if ($verificationObject->created + UserEmailVerifications::VERIFICATION_CODE_LIFESPAN > time()) {
+				$this->verificationObject = $verificationObject;
+				break;
+			}
+		}
+		return $this->verificationObject;
+	}
+
+	public function getEmailsForUser($user_id) {
+		return self::find(array('user_id = :user_id:', 'bind' => array('user_id' => $user_id)));
+	}
+
+	public function verify($code) {
+		if ($this->getVerificationObject()->verifyCode($code)) {
+			$this->setEmailVerified();
+			return true;
+		}
+	}
+
+	public function setEmailVerified() {
+		$this->verified = time();
+		$this->save();
 	}
 
 }
