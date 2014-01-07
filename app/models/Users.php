@@ -41,9 +41,7 @@ class Users extends \Phalcon\Mvc\Model {
 	}
 
 	public function getEmails() {
-		if (count($this->_emails) > 0) {
-			// just return those emails
-		} else {
+		if (!count($this->_emails)) {
 			$usersEmails = new UsersEmails();
 			$emails = $usersEmails->getEmailsForUser($this->id);
 			$this->_emails = $emails;
