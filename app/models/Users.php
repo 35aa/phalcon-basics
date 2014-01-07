@@ -59,10 +59,10 @@ class Users extends \Phalcon\Mvc\Model {
 				if ($email->verify($code)) {
 					// set user as active
 					$user->setUserActive();
+					return $user;
 				}
 			}
 		}
-		return $user;
 	}
 
 	public function setUserActive() {

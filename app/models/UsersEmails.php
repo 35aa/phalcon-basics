@@ -47,6 +47,7 @@ class UsersEmails extends \Phalcon\Mvc\Model {
 	}
 
 	public function verify($code) {
+		if (!$this->getVerificationObject()) return false;
 		if ($this->getVerificationObject()->verifyCode($code)) {
 			$this->setEmailVerified();
 			return true;
