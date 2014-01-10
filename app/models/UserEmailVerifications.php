@@ -32,6 +32,6 @@ class UserEmailVerifications extends \Phalcon\Mvc\Model {
 	}
 
 	public function loadVerificationObjectForEmail($email) {
-		return self::find(array('email_id=:email_id:','bind'=>array('email_id'=>$email->id) ));
+		return self::find(array('email_id=:email_id:','bind'=>array('email_id'=>$email->id), 'order' => 'created desc'));
 	}
 }
