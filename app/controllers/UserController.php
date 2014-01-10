@@ -32,10 +32,8 @@ class UserController extends \Phalcon\Mvc\Controller {
 				// send verification data to primary email
 				$newUser->getPrimaryEmail()->sendVerifyEmail($this->getDI()->get('config'));
 
-				// phone validation
-				$this->dispatcher->forward(array(
-						"controller" => "user",
-						"action" => "signin" ));
+				// redirect to sing up confirmation page
+				$this->view->pick('user/signup_confirmation');
 				return;
 			}
 
