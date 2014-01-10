@@ -57,7 +57,6 @@ class UserController extends \Phalcon\Mvc\Controller {
 	}
 
 	public function initverifyAction() {
-		$emailRegistered = false;
 		if (!$this->view->form) $this->view->setVar('form', new UserForm\InitverifyForm());
 		if (!$this->view->captcha) $this->view->setVar('captcha', new Captcha\Captcha($this->getDI()->get('config')->recaptcha));
 
@@ -72,10 +71,6 @@ class UserController extends \Phalcon\Mvc\Controller {
 				$userEmail->sendVerifyEmail($this->getDI()->get('config'));
 			}
 		}
-	}
-
-	public function initverifysubmitAction() {
-
 	}
 
 	public function confirmemailAction() {
