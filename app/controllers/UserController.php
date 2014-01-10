@@ -25,11 +25,12 @@ class UserController extends \Phalcon\Mvc\Controller {
 
 			if ($form->isValid($this->getDI()->getRequest()->getPost(), $newUser)
 					&& $captcha->checkAnswer($this->getDI()->getRequest())
+					// TODO: rename isEmailRegistered to getRegisteredEmail
 					&& !($emailRegistered = UsersEmails::isEmailRegistered($newUser->email))) {
 				// create new user
 				$newUser->create();
 				// send verification data to primary email
-				$newUser->getPrimaryEmail()->sendVerifyEmail($newUser, $this->getDI()->get('config'));
+				$newUser->getPrimaryEmail()->sendVerifyEmail($this->getDI()->get('config'));
 
 				// phone validation
 				$this->dispatcher->forward(array(
@@ -56,13 +57,19 @@ class UserController extends \Phalcon\Mvc\Controller {
 	}
 
 	public function initverifyAction() {
-		$form = new UserForm\SignupForm();
-		$captcha = new Captcha\Captcha($this->getDI()->get('config')->recaptcha);
+		if (!$this->view->form) $this->view->setVar('form', new UserForm\InitverifyForm());
+		if (!$this->view->captcha) $this->view->setVar('captcha', new Captcha\Captcha($this->getDI()->get('config')->recaptcha));
+
 		if ($this->getDI()->getRequest()->isPost()) {
-			
-		}
-		else {
-			$this->view->setVars(array('captcha' => $captcha, 'form' => $form, 'isError' => false, 'success' => false));
+			$initVerify = (Object) Array();
+			$usersEmailsTable = new UsersEmails();
+
+			if ($this->view->form->isValid($this->getDI()->getRequest()->getPost(), $initVerify)
+					&& $this->view->captcha->checkAnswer($this->getDI()->getRequest())
+					&& ($userEmail = $usersEmailsTable->getUnverifiedEmailByEmail($initVerify->email)) ) {
+				// send verification data
+				$userEmail->sendVerifyEmail($this->getDI()->get('config'));
+			}
 		}
 	}
 

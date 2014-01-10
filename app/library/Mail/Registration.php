@@ -6,14 +6,14 @@ class Registration extends Mail {
 
 	const SUBJECT = 'Реєстрація на ресурсі ....';
 
-	public function send($user, $from, $server) {
+	public function send($email, $from, $server) {
 		// get setTo email
-		$this->setTo(array($user->getPrimaryEmail()->email));
+		$this->setTo(array($email->email));
 		$this->setFrom($from);
 		$this->setReplyTo($from);
 		$this->setSubject(self::SUBJECT);
 
-		$this->addBody($server, $user->getPrimaryEmail());
+		$this->addBody($server, $email);
 		$this->sendEmail();
 	}
 

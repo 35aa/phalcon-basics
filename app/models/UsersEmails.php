@@ -10,10 +10,10 @@ class UsersEmails extends \Phalcon\Mvc\Model {
 		parent::create($data, $whiteList);
 	}
 
-	public function sendVerifyEmail($user, $config) {
+	public function sendVerifyEmail($config) {
 		//email validation
 		$email = new Mail\Registration();
-		$email->send($user, $config->application->fromEmail, $config->application->baseUri);
+		$email->send($this, $config->application->fromEmail, $config->application->baseUri);
 	}
 
 	public function getEmailByEmailID($email_id) {
@@ -57,6 +57,10 @@ class UsersEmails extends \Phalcon\Mvc\Model {
 	public function setEmailVerified() {
 		$this->verified = time();
 		$this->save();
+	}
+
+	public function getUnverifiedEmailByEmail($email) {
+		return self::findFirst(array('email = :email: AND verified IS NULL', 'bind' => array('email' => $email)));
 	}
 
 }
