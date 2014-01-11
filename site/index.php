@@ -45,6 +45,11 @@ try {
 	$di->set('session', function() {
 		$session = new Phalcon\Session\Adapter\Files();
 		$session->start();
+		if (!$session->get('auth')) $session->auth = new \Auth();
+		else if (!$session->auth->isAuthenticated()) {
+			$session->destroy();
+			$session->auth = new \Auth();
+		}
 		return $session; });
 
 	//Handle the request
