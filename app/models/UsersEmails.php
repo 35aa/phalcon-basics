@@ -63,4 +63,8 @@ class UsersEmails extends \Phalcon\Mvc\Model {
 		return self::findFirst(array('email = :email: AND verified IS NULL', 'bind' => array('email' => $email)));
 	}
 
+	public function getVerifiedPrimaryEmailsByEmail($email) {
+		return self::find(array('email = :email: AND verified IS NOT NULL AND is_primary = 1', 'bind' => array('email' => $email)));
+	}
+
 }

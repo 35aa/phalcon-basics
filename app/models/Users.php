@@ -70,4 +70,14 @@ class Users extends \Phalcon\Mvc\Model {
 		$this->save();
 	}
 
+	public function getUserByPrimaryEmailAndPass($email, $password) {
+		$emailsTable = new UsersEmails();
+		$emails = $emailsTable->getVerifiedPrimaryEmailsByEmail($email);
+		foreach ($emails as $primaryEmail) {
+			$user = self::findFirst(array('id = :user_id: AND active = 1', 'bind' => array('user_id' => $primaryEmail->user_id)));
+			if ($user->checkPassword($password)) return $user;
+		}
+		return null;
+	}
+
 }

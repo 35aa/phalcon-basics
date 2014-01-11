@@ -3,7 +3,7 @@
 class UserController extends \Phalcon\Mvc\Controller {
 
 	public function initialize() {
-		if (false/*check if user already logged in*/) {}//redirect to index/index page
+		if ($this->session->auth->isAuthenticated()) {$this->response->redirect("home/index");}//redirect to index/index page
 	}
 
 	public function indexAction() {}
@@ -17,7 +17,6 @@ class UserController extends \Phalcon\Mvc\Controller {
 		$emailRegistered = false;
 		$captcha = null;
 		$form = null;
-
 		if ($this->getDI()->getRequest()->isPost()) {
 			$form = new UserForm\SignupForm();
 			$captcha = new Captcha\Captcha($this->getDI()->get('config')->recaptcha);
@@ -78,16 +77,45 @@ class UserController extends \Phalcon\Mvc\Controller {
 		$form = new UserForm\VerifyEmailForm();
 		$validatedData = (Object) Array();
 		if ($form->isValid($this->getDI()->getRequest()->getQuery(), $validatedData)) {
-			// http://alex.mydev.org.ua/user/confirmemail?id=76f879cc7a38ff7c9165fa7019113347&code=%242a%2410%24xAe0R8BsNl6ul0qBztquzeKPQM9ItQGhjFxj8%2Fkwm48lhqeecY4zC
 			$users = new Users();
 			$this->view->setVar('user', $users->verifyUserByIdAndCode($validatedData->id, $validatedData->code));
 		}
 	}
 
 	public function signinAction() {
-		// TODO: basic sign in
+		if (!$this->view->form) $this->view->setVar('form', new UserForm\SigninForm());
+		//TODO: after 3 times should appear captcha!!!
+//		if (!$this->view->captcha) $this->view->setVar('captcha', new Captcha\Captcha($this->getDI()->get('config')->recaptcha));
 	}
 
-	public function checkCredentialsAction() {}
+	public function checkCredentialsAction() {
+		$captcha = null;
+		$form = null;
+		if ($this->getDI()->getRequest()->isPost()) {
+			$form = new UserForm\SigninForm();
+//TODO: add captcha after 3 times
+//			$captcha = new Captcha\Captcha($this->getDI()->get('config')->recaptcha);
+			$usersTable = new Users();
+			$validatedData = (Object) Array();
+			if ($form->isValid($this->getDI()->getRequest()->getPost(), $validatedData)
+//					&& $captcha->checkAnswer($this->getDI()->getRequest())
+					&& $user = $usersTable->getUserByPrimaryEmailAndPass($validatedData->email, $validatedData->password)) {
+
+				$this->session->auth = new \Auth($user);
+				$this->response->redirect("home/index");
+				return;
+			}
+		}
+
+		if ($form) {
+			$this->view->setVars(array('captcha' => $captcha, 'form' => $form));
+			$this->view->form->get('password')->clear();
+		}
+
+		$this->dispatcher->forward(array(
+				"controller" => "user",
+				"action" => "signin" ));
+
+	}
 
 }
