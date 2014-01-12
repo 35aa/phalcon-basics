@@ -3,7 +3,7 @@
 class UserController extends \Phalcon\Mvc\Controller {
 
 	public function initialize() {
-		if ($this->session->auth->isAuthenticated()) {$this->response->redirect("home/index");}//redirect to index/index page
+		if ($this->session->get('auth')->isAuthenticated()) {$this->response->redirect("home/index");}//redirect to index/index page
 	}
 
 	public function indexAction() {}
@@ -98,7 +98,7 @@ class UserController extends \Phalcon\Mvc\Controller {
 //					&& $captcha->checkAnswer($this->getDI()->getRequest())
 					&& $user = $usersTable->getUserByPrimaryEmailAndPass($validatedData->email, $validatedData->password)) {
 
-				$this->session->auth = new \Auth($user);
+				$this->session->set('auth', new \Auth($user));
 				$this->response->redirect("home/index");
 				return;
 			}
