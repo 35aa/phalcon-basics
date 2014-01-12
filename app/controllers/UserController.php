@@ -121,4 +121,10 @@ class UserController extends \Phalcon\Mvc\Controller {
 
 	}
 
+	public function signoutAction() {
+		//Destroy the whole session
+		$this->session->destroy();
+		return $this->response->redirect('index/index');
+	}
+
 }
