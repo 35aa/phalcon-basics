@@ -48,8 +48,9 @@ try {
 		if (!$session->get('auth')) $session->auth = new \Auth();
 		else if (!$session->auth->isAuthenticated()) {
 			$session->destroy();
-			$session->auth = new \Auth();
+			$session->set('auth', new \Auth());
 		}
+		$session->get('auth')->resetTimeout();
 		return $session; });
 
 	//Handle the request

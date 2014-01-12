@@ -12,7 +12,7 @@ class Auth {
 		if ($user) {
 			$this->saveUser($user);
 		}
-		$this->started = time();
+		$this->resetTimeout();
 	}
 
 	public function saveUser($user) {
@@ -27,6 +27,10 @@ class Auth {
 	public function isAuthenticated() {
 		return isset($this->user['id']) && $this->user['id']
 						&& $this->started + self::SESSION_TIMEOUT < time();
+	}
+
+	public function resetTimeout() {
+		$this->started = time();
 	}
 }
 
