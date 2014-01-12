@@ -42,11 +42,11 @@ try {
 		return  $connection; });
 
 	//Start the session the first time when some component request the session service
-	$di->set('session', function() {
+	$di->setShared('session', function() {
 		$session = new Phalcon\Session\Adapter\Files();
 		$session->start();
-		if (!$session->get('auth')) $session->auth = new \Auth();
-		else if (!$session->auth->isAuthenticated()) {
+		if (!$session->get('auth')) $session->set('auth', new \Auth());
+		else if (!$session->get('auth')->isAuthenticated()) {
 			$session->destroy();
 			$session->auth = new \Auth();
 		}

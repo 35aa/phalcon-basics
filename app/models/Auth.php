@@ -26,7 +26,7 @@ class Auth {
 
 	public function isAuthenticated() {
 		return isset($this->user['id']) && $this->user['id']
-						&& $this->started + self::SESSION_TIMEOUT < time();
+						&& $this->started + self::SESSION_TIMEOUT > time();
 	}
 }
 
