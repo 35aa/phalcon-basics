@@ -46,7 +46,7 @@ try {
 		$session = new Phalcon\Session\Adapter\Files();
 		$session->start();
 		if (!$session->get('auth')) $session->set('auth', new \Auth());
-		else if (!$session->get('auth')->isAuthenticated()) {
+		elseif ($session->get('auth')->isExpired()) {
 			$session->destroy();
 			$session->set('auth', new \Auth());
 		}

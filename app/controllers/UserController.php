@@ -81,8 +81,10 @@ class UserController extends \Phalcon\Mvc\Controller {
 
 	public function signinAction() {
 		if (!$this->view->form) $this->view->setVar('form', new UserForm\SigninForm());
-		//TODO: after 3 times should appear captcha!!!
-//		if (!$this->view->captcha) $this->view->setVar('captcha', new Captcha\Captcha($this->getDI()->get('config')->recaptcha));
+		if ($this->session->get('auth')->isMaxRetryCount()
+				&& !$this->view->captcha) {
+			$this->view->setVar('captcha', new Captcha\Captcha($this->getDI()->get('config')->recaptcha));
+		}
 	}
 
 	public function checkCredentialsAction() {
@@ -90,12 +92,15 @@ class UserController extends \Phalcon\Mvc\Controller {
 		$form = null;
 		if ($this->getDI()->getRequest()->isPost()) {
 			$form = new UserForm\SigninForm();
-//TODO: add captcha after 3 times
-//			$captcha = new Captcha\Captcha($this->getDI()->get('config')->recaptcha);
+			$checkCaptcha = true;
+			if ($this->session->get('auth')->isMaxRetryCount()) {
+				$captcha = new Captcha\Captcha($this->getDI()->get('config')->recaptcha);
+				$checkCaptcha = $captcha->checkAnswer($this->getDI()->getRequest());
+			}
 			$usersTable = new Users();
 			$validatedData = (Object) Array();
 			if ($form->isValid($this->getDI()->getRequest()->getPost(), $validatedData)
-//					&& $captcha->checkAnswer($this->getDI()->getRequest())
+					&& $checkCaptcha
 					&& $user = $usersTable->getUserByPrimaryEmailAndPass($validatedData->email, $validatedData->password)) {
 
 				$this->session->set('auth', new \Auth($user));
@@ -105,6 +110,7 @@ class UserController extends \Phalcon\Mvc\Controller {
 		}
 
 		if ($form) {
+			$this->session->get('auth')->incrementRetryCount();
 			$this->view->setVars(array('captcha' => $captcha, 'form' => $form));
 			$this->view->form->get('password')->clear();
 		}
