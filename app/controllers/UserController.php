@@ -33,8 +33,7 @@ class UserController extends \Phalcon\Mvc\Controller {
 				$newUser->getPrimaryEmail()->sendVerifyEmail($this->getDI()->get('config'));
 
 				// redirect to sing up confirmation page
-				$this->view->pick('user/signup_confirmation');
-				return;
+				return $this->view->pick('user/signup_confirmation');
 			}
 
 			else if ($emailRegistered) {
