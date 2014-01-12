@@ -65,6 +65,7 @@ class UserController extends \Phalcon\Mvc\Controller {
 					&& ($userEmail = $usersEmailsTable->getUnverifiedEmailByEmail($initVerify->email)) ) {
 				// send verification data
 				$userEmail->sendVerifyEmail($this->getDI()->get('config'));
+				return $this->view->pick('user/initverify_confirmation');
 			}
 		}
 	}
