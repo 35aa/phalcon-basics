@@ -1,0 +1,30 @@
+<p>
+	Username: 
+	<?=$this->view->getVar('user')->name?>
+	<a href='/profile/login'>edit</a>
+</p>
+
+<p>
+	Password <a href='/profile/password'>edit</a>
+</p>
+
+<p>
+	<label>Emails: </label><br />
+	<ul>
+<? foreach ($this->view->getVar('user_emails') as $email) { ?>
+		<li>
+			<?=$email->email?>
+			<?=$email->is_primary ? '<i style=\'color:green\'>primary</i>' : ''?>
+			<?=$email->verified ? '' : '<i style=\'color:red\'>not verified</i>'?>
+			<?=$email->verified && !$email->is_primary ? '<a href="/profile/setprimaryemail">set primary</a>' : ''?>
+			<?=$email->is_primary ? '' : "<a href='/profile/deleteemail/?id=$email->id'>delete</a>"?>
+		</li>
+<? } ?>
+			<li>
+				<a href='/profile/email'>Add new email</a>
+			</li>
+	</ul>
+</p>
+
+<br />
+<a href='/home/index'>Back to Home</a>

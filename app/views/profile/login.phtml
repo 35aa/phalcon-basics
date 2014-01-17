@@ -1,0 +1,18 @@
+<?php use Phalcon\Tag as Tag; ?>
+<?=Tag::form(array($this->view->form->getAction())) ?>
+
+	<p>
+		<label for="name">New Username<?php if ($form->hasMessagesFor('name')) { ?> (<strong style="color:red;"><?php echo $form->getMessagesFor('name')[0]?></strong>)<?php } ?>:</label><br />
+		<?php echo $form->render('name') ?>
+	</p>
+
+	<p>
+		<?php echo $form->render('submit') ?>
+	</p>
+
+<?=Tag::endForm ()?>
+
+<br /><br />
+<a href='/profile'>Back to Profile</a>
+<br />
+<a href='/home/index'>Back to Home</a>
