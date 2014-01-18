@@ -80,4 +80,18 @@ class Users extends \Phalcon\Mvc\Model {
 		return null;
 	}
 
+	public function setNewUsername($name) {
+		$this->name = $name->name;
+		$this->save();
+	}
+
+	public function changeUserPassword($password) {
+		// check whether old password match
+		if ($this->checkPassword($password->old_password)) {
+			$this->hashPassword($password->new_password);
+			$this->save();
+			return true;
+		}
+	}
+
 }

@@ -51,5 +51,10 @@ class Auth {
 	public function isMaxRetryCount() {
 		return $this->retryCount >= self::MAX_RETRY_COUNT;
 	}
+
+	public function getUserCredentials() {
+		return array('id' => $this->user['id']);
+	}
+
 }
 

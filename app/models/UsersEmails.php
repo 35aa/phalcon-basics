@@ -4,6 +4,10 @@ class UsersEmails extends \Phalcon\Mvc\Model {
 
 	protected $verificationObject;
 
+	public function createEmail($email) {
+		$this->create(array('user_id' => $email->user_id, 'email' => $email->email, 'is_primary' => $email->is_primary));
+	}
+
 	public function create($data = array(), $whiteList = array()) {
 		if (count($data)) $this->assign($data);
 		$this->created = time();
@@ -20,8 +24,12 @@ class UsersEmails extends \Phalcon\Mvc\Model {
 		return self::findFirst(array('id = :email_id:', 'bind' => array('email_id' => $email_id)));
 	}
 
+	public function getPrimaryEmailForUser($user_id) {
+		return self::findFirst(array('user_id = :user_id: AND is_primary = 1', 'bind' => array('user_id' => $user_id)));
+	}
+
 	public static function isEmailRegistered($email) {
-		return self::findFirst(array('email = :email:', 'bind' => array('email' => $email))) != null;
+		return self::findFirst(array('email = :email: AND deleted IS NULL', 'bind' => array('email' => $email))) != null;
 	}
 
 	public function createVerificationObject() {
@@ -43,7 +51,7 @@ class UsersEmails extends \Phalcon\Mvc\Model {
 	}
 
 	public function getEmailsForUser($user_id) {
-		return self::find(array('user_id = :user_id:', 'bind' => array('user_id' => $user_id)));
+		return self::find(array('user_id = :user_id: AND deleted IS NULL', 'bind' => array('user_id' => $user_id)));
 	}
 
 	public function verify($code) {
@@ -54,9 +62,8 @@ class UsersEmails extends \Phalcon\Mvc\Model {
 		}
 	}
 
-	public function setEmailVerified() {
-		$this->verified = time();
-		$this->save();
+	public function getEmailByIDandUserID($email) {
+		return self::findFirst(array('id = :id: AND user_id = :user_id: AND deleted IS NULL', 'bind' => array('id' => $email->id, 'user_id' => $email->user_id)));
 	}
 
 	public function getUnverifiedEmailByEmail($email) {
@@ -65,6 +72,39 @@ class UsersEmails extends \Phalcon\Mvc\Model {
 
 	public function getVerifiedPrimaryEmailsByEmail($email) {
 		return self::find(array('email = :email: AND verified IS NOT NULL AND is_primary = 1', 'bind' => array('email' => $email)));
+	}
+
+	public function setEmailVerified() {
+		$this->verified = time();
+		$this->save();
+	}
+
+	public function setNewPrimaryEmail($primaryEmail) {
+		$oldPrimaryEmail = $this->getPrimaryEmailForUser($primaryEmail->user_id);
+		$newPrimaryEmail = $this->getEmailByIDandUserID($primaryEmail);
+		if ($newPrimaryEmail && $newPrimaryEmail->verified) {
+			$oldPrimaryEmail->resetPrimaryEmail();
+			$newPrimaryEmail->setEmailPrimary();
+			return true;
+		}
+		return false;
+	}
+
+	public function setEmailPrimary() {
+		if (!$this->verified) return false;
+		$this->is_primary = 1;
+		return $this->save();
+	}
+
+	public function resetPrimaryEmail() {
+		if (!$this->verified) return false;
+		$this->is_primary = 0;
+		return $this->save();
+	}
+
+	public function setEmailDeleted() {
+		$this->deleted = time();
+		return $this->save();
 	}
 
 }
