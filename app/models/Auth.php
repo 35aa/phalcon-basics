@@ -53,7 +53,7 @@ class Auth {
 	}
 
 	public function getUserCredentials() {
-		return $this->user;
+		return array('id' => $this->user['id']);
 	}
 
 }

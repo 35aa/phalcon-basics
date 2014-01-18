@@ -2,9 +2,9 @@
 
 namespace ProfileForm;
 
-class LoginForm extends \Phalcon\Forms\Form {
+class UsernameForm extends \Phalcon\Forms\Form {
 	public function initialize() {
-		$this->setAction('profile/login');
+		$this->setAction('profile/username');
 
 		$element = new \Phalcon\Forms\Element\Text('name', array('size' => '30', 'maxlength'=>70));
 		$element->addValidators(array(

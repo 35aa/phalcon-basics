@@ -8,19 +8,16 @@ class ProfileController extends \Phalcon\Mvc\Controller {
 
 	public function indexAction() {
 		$session = $this->session->get('auth');
-		if (!$session->isAuthenticated()) return $this->response->redirect("user/signin");
 		$user_id = $session->getUserCredentials()['id'];
 		$usersTable = new Users();
 		// Get user
 		$user = $usersTable->getUserByID($user_id);
 		$this->view->setVar('user', $user);
-		// Get emails
-		$user_emails = $user->getEmails();
-		$this->view->setVar('user_emails', $user_emails);
 	}
 
-	public function loginAction() {
-		if (!$this->view->form) $this->view->setVar('form', new ProfileForm\LoginForm());
+	public function usernameAction() {
+		// In this action implemented change username function
+		if (!$this->view->form) $this->view->setVar('form', new ProfileForm\UsernameForm());
 		if ($this->getDI()->getRequest()->isPost()) {
 			$login = (Object) Array();
 			if ($this->view->form->isValid($this->getDI()->getRequest()->getPost(), $login)) {
@@ -41,16 +38,14 @@ class ProfileController extends \Phalcon\Mvc\Controller {
 				$session = $this->session->get('auth');
 				$user_id = $session->getUserCredentials()['id'];
 				$usersTable = new Users();
-				$user = $usersTable->getUserByID($user_id)->changeUserPassword($password);
+				$passwordChanged = $usersTable->getUserByID($user_id)->changeUserPassword($password);
 				// redirect to sing up confirmation page
-				if ($user) return $this->view->pick('profile/password_confirmation');
+				if ($passwordChanged) return $this->view->pick('profile/password_confirmation');
 			}
 		}
-		if ($this->view->form) {
-			$this->view->form->get('old_password')->clear();
-			$this->view->form->get('new_password')->clear();
-			$this->view->form->get('confirmPassword')->clear();
-		}
+		$this->view->form->get('old_password')->clear();
+		$this->view->form->get('new_password')->clear();
+		$this->view->form->get('confirmPassword')->clear();
 	}
 
 	public function emailAction() {
@@ -64,7 +59,7 @@ class ProfileController extends \Phalcon\Mvc\Controller {
 				$email->is_primary = 0; // not primary
 				$usersEmails = new UsersEmails();
 				$config = $this->getDI()->get('config');
-				$usersEmails->create(array('user_id' => $email->user_id, 'email' => $email->email, 'is_primary' => $email->is_primary));
+				$usersEmails->createEmail($email);
 				$usersEmails->sendVerifyEmail($config);
 				// redirect to profile/index
 				if ($usersEmails) return $this->response->redirect('profile/index');
@@ -79,9 +74,9 @@ class ProfileController extends \Phalcon\Mvc\Controller {
 			$session = $this->session->get('auth');
 			$deleteEmail->user_id = $session->getUserCredentials()['id'];  // pre-populate required data
 			$usersEmails = new UsersEmails();
-			$userEmail = $usersEmails->getEmailByIDandUserID($deleteEmail->id, $deleteEmail->user_id);
-			// check if email exist and is not primary
-			if ($userEmail && $userEmail->is_primary != 1) $userEmail->setEmailDeleted();
+			$userEmail = $usersEmails->getEmailByIDandUserID($deleteEmail);
+			// Email should exist and it should not be primary. Without primary email user could not login to the system!
+			if ($userEmail && !$userEmail->is_primary) $userEmail->setEmailDeleted();
 			return $this->response->redirect('profile/index');
 		}
 	}
@@ -94,6 +89,10 @@ class ProfileController extends \Phalcon\Mvc\Controller {
 			$primaryEmail->user_id = $session->getUserCredentials()['id']; // pre-populate required data
 			$usersEmails = new UsersEmails();
 			$usersEmails->setNewPrimaryEmail($primaryEmail);
+			// update session object
+			$usersTable = new Users();
+			$user = $usersTable->getUserByID($primaryEmail->user_id);
+			$this->session->set('auth', new \Auth($user));
 			// redirect to profile/index
 			if ($usersEmails) return $this->response->redirect('profile/index');
 		}

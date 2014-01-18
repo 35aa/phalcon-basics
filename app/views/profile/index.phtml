@@ -1,7 +1,7 @@
 <p>
 	Username: 
 	<?=$this->view->getVar('user')->name?>
-	<a href='/profile/login'>edit</a>
+	<a href='/profile/username'>edit</a>
 </p>
 
 <p>
@@ -11,7 +11,7 @@
 <p>
 	<label>Emails: </label><br />
 	<ul>
-<? foreach ($this->view->getVar('user_emails') as $email) { ?>
+<? foreach ($this->view->getVar('user')->getEmails() as $email) { ?>
 		<li>
 			<?=$email->email?>
 			<?=$email->is_primary ? '<i style=\'color:green\'>primary</i>' : ''?>
