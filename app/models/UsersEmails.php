@@ -80,24 +80,29 @@ class UsersEmails extends \Phalcon\Mvc\Model {
 	}
 
 	public function setNewPrimaryEmail($primaryEmail) {
-		$oldPrimaryEmail = $this->getPrimaryEmailForUser($primaryEmail->user_id);
-		$newPrimaryEmail = $this->getEmailByIDandUserID($primaryEmail);
-		if ($newPrimaryEmail && $newPrimaryEmail->verified) {
-			$oldPrimaryEmail->resetPrimaryEmail();
-			$newPrimaryEmail->setEmailPrimary();
+		$userEmails = $this->getEmailsForUser($primaryEmail->user_id);
+		$newPrimary = null;
+		foreach ($userEmails as $email) {
+			if ($email->is_primary) {
+				$oldPrimary = $email;
+			} elseif ($email->id == $primaryEmail->id && $email->verified) {
+				$newPrimary = $email;
+			}
+		}
+		if ($oldPrimary && $newPrimary) {
+			$oldPrimary->resetPrimaryEmail();
+			$newPrimary->setEmailPrimary();
 			return true;
 		}
 		return false;
 	}
 
 	public function setEmailPrimary() {
-		if (!$this->verified) return false;
 		$this->is_primary = 1;
 		return $this->save();
 	}
 
 	public function resetPrimaryEmail() {
-		if (!$this->verified) return false;
 		$this->is_primary = 0;
 		return $this->save();
 	}
