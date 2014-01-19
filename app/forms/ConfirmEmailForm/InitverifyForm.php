@@ -1,10 +1,10 @@
 <?
 
-namespace UserForm;
+namespace ConfirmEmailForm;
 
 class InitverifyForm extends \Phalcon\Forms\Form {
 	public function initialize() {
-		$this->setAction('user/initverify');
+		$this->setAction('confirmemail/initverify');
 
 		$element = new \Phalcon\Forms\Element\Text('email', array('size' => '30', 'maxlength'=>70));
 		$element->addValidators(array(
