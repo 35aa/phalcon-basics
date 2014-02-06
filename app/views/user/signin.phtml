@@ -4,14 +4,19 @@
 </head>
 <body>
 <?php $form = $this->view->form; echo $this->tag->form($form->getAction()) ?>
+<?php if ($this->view->getVar('error')) {?>
+	<p style="padding-left:0.5em; color:red; font-weight: bold; font-size:small;">
+		* Login or password is wrong. Please try again.
+	</p>
+<?php } ?>
 	<p>
-		<label for="email">Email<?php if ($form->hasMessagesFor('email')) { ?> (<strong style="color:red;"><?php echo $form->getMessagesFor('email')[0]?></strong>)<?php } ?><?php if ($this->view->getVar('emailRegistered')) { ?> (<strong style="color:red;">This email already registered</strong>)<?php } ?>:</label>
+		<label for="email">Email<font style="color:red;">*</font><?php if ($form->hasMessagesFor('email')) { ?> (<strong style="color:red;"><?php echo $form->getMessagesFor('email')[0]?></strong>)<?php } ?><?php if ($this->view->getVar('emailRegistered')) { ?> (<strong style="color:red;">This email already registered</strong>)<?php } ?>:</label>
 		<?php echo $form->render('email') ?>
 		<span style="font-size:small; color:grey;display:block;">* Please, use only primary email for your account to login.</span>
 	</p>
 
 	<p>
-		<label for="password">Password<?php if ($form->hasMessagesFor('password')) { ?> (<strong style="color:red;"><?php echo $form->getMessagesFor('password')[0]?></strong>)<?php } ?>:</label>
+		<label for="password">Password<font style="color:red;">*</font><?php if ($form->hasMessagesFor('password')) { ?> (<strong style="color:red;"><?php echo $form->getMessagesFor('password')[0]?></strong>)<?php } ?>:</label>
 		<?php echo $form->render('password') ?>
 	</p>
 
