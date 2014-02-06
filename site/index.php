@@ -24,7 +24,9 @@ try {
 	$di->set('view', function() use ($config) {
 		$view = new \Phalcon\Mvc\View();
 		$view->setViewsDir($config->view->dir);
-		return $view; });
+		$view->setTemplateAfter('main');
+		return $view;
+	});
 
 	//Start the session the first time when some component request the session service
 	$di->set('db', function() use ($config) {
