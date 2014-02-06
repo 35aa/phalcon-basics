@@ -10,9 +10,8 @@ if($this->view->getVar('bootstrap_enable')) {
 // Jquery
 echo Phalcon\Tag::javascriptInclude('https://code.jquery.com/jquery.js', false);
 //Bootstrap
-echo Phalcon\Tag::stylesheetLink('bootstrap/css/bootstrap.min.css');
-echo Phalcon\Tag::stylesheetLink('bootstrap/addons/sticky-footer-navbar.css');
-echo Phalcon\Tag::javascriptInclude('bootstrap/js/bootstrap.min.js');
+echo Phalcon\Tag::stylesheetLink('//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css', false);
+echo Phalcon\Tag::javascriptInclude('//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js', false);
 }
 ?>
 		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -23,12 +22,11 @@ echo Phalcon\Tag::javascriptInclude('bootstrap/js/bootstrap.min.js');
 		<![endif]-->
 	</head>
 	<body>
-		<div id="wrap">
 <?=$this->partial('partials/navbar')?>
 			<div class="container">
 <?=$this->getContent() ?>
 			</div>
-		</div>
+
 		<div id="footer">
 <?=$this->partial('partials/footer')?>
 		</div>
