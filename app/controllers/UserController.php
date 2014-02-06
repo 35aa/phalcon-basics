@@ -54,6 +54,7 @@ class UserController extends \Phalcon\Mvc\Controller {
 
 	public function signinAction() {
 		if (!$this->view->form) $this->view->setVar('form', new UserForm\SigninForm());
+		if (!$this->view->error) $this->view->setVar('error', false);
 		if ($this->session->get('auth')->isMaxRetryCount()
 				&& !$this->view->captcha) {
 			$this->view->setVar('captcha', new Captcha\Captcha($this->getDI()->get('config')->recaptcha));
@@ -84,7 +85,7 @@ class UserController extends \Phalcon\Mvc\Controller {
 
 		if ($form) {
 			$this->session->get('auth')->incrementRetryCount();
-			$this->view->setVars(array('captcha' => $captcha, 'form' => $form));
+			$this->view->setVars(array('captcha' => $captcha, 'form' => $form, 'error' => true));
 			$this->view->form->get('password')->clear();
 		}
 
