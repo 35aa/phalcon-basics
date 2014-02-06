@@ -6,7 +6,7 @@ class SigninForm extends \Phalcon\Forms\Form {
 	public function initialize() {
 		$this->setAction('user/checkCredentials');
 
-		$element = new \Phalcon\Forms\Element\Text('email', array('size' => '30', 'maxlength'=>70));
+		$element = new \Phalcon\Forms\Element\Text('email', array('class' => 'form-control', 'size' => '30', 'maxlength'=>70));
 		$element->addValidators(array(
 				new \Phalcon\Validation\Validator\PresenceOf(array(
 						'message' => 'The email is required')),
@@ -15,7 +15,7 @@ class SigninForm extends \Phalcon\Forms\Form {
 		));
 		$this->add($element);
 
-		$element = new \Phalcon\Forms\Element\Password('password', array('size' => '15', 'maxlength'=>30));
+		$element = new \Phalcon\Forms\Element\Password('password', array('class' => 'form-control', 'size' => '15', 'maxlength'=>30));
 		$element->addValidators(array(
 				new \Phalcon\Validation\Validator\PresenceOf(array(
 						'message' => 'The password is required'
@@ -27,7 +27,7 @@ class SigninForm extends \Phalcon\Forms\Form {
 		));
 		$this->add($element);
 		
-		$element = new \Phalcon\Forms\Element\Submit('submit', array('value'=>'Login'));
+		$element = new \Phalcon\Forms\Element\Submit('submit', array('class'=>'btn btn-default', 'value'=>'Login'));
 		$this->add($element);
 	}
 }
