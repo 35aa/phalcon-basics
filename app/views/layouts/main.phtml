@@ -7,11 +7,10 @@
 		<title>Blog's title</title>
 <?
 if($this->view->getVar('bootstrap_enable')) {
-// Jquery
-echo Phalcon\Tag::javascriptInclude('https://code.jquery.com/jquery.js', false);
 //Bootstrap
 echo Phalcon\Tag::stylesheetLink('//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css', false);
-echo Phalcon\Tag::javascriptInclude('//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js', false);
+echo Phalcon\Tag::stylesheetLink('//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css', false);
+echo Phalcon\Tag::stylesheetLink('css/theme.css');
 }
 ?>
 		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -23,12 +22,20 @@ echo Phalcon\Tag::javascriptInclude('//netdna.bootstrapcdn.com/bootstrap/3.1.0/j
 	</head>
 	<body>
 <?=$this->partial('partials/navbar')?>
-			<div class="container">
+		<div class="container">
 <?=$this->getContent() ?>
-			</div>
+		</div>
 
 		<div id="footer">
-<?=$this->partial('partials/footer')?>
+<?=$this->partial('partials/footer');?>
 		</div>
+<?
+if($this->view->getVar('bootstrap_enable')) {
+// Jquery
+echo Phalcon\Tag::javascriptInclude('https://code.jquery.com/jquery.js', false);
+//Bootstrap
+echo Phalcon\Tag::javascriptInclude('//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js', false);
+}
+?>
 	</body>
 </html>
