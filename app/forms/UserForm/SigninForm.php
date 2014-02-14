@@ -26,7 +26,10 @@ class SigninForm extends \Phalcon\Forms\Form {
 				)),
 		));
 		$this->add($element);
-		
+
+		$element = new \Phalcon\Forms\Element\Check('remember_me', array('value' => true));
+		$this->add($element);
+
 		$element = new \Phalcon\Forms\Element\Submit('submit', array('class'=>'btn btn-default', 'value'=>'Login'));
 		$this->add($element);
 	}

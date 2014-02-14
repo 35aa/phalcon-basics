@@ -76,7 +76,20 @@ class UserController extends \Phalcon\Mvc\Controller {
 			if ($form->isValid($this->getDI()->getRequest()->getPost(), $validatedData)
 					&& $checkCaptcha
 					&& $user = $usersTable->getUserByPrimaryEmailAndPass($validatedData->email, $validatedData->password)) {
-
+				// remember me
+				if (isset($validatedData->remember_me) && $validatedData->remember_me) {
+					$userToRememberMeTable = new UserToRememberMe();
+					if ($existed = $userToRememberMeTable->getCodeByUserID($user->id)) {
+						// update existed record
+						$rememberMe = $existed->renewCode();
+					} else {
+						// create new
+						$rememberMe = $userToRememberMeTable->create(array('user_id' => $user->id));
+					}
+					// set cookies
+					$this->cookies->set('remember-me', '1', time() + 15 * 86400);
+					$this->cookies->set('remember-me-code', $rememberMe->code, time() + 15 * 86400);
+				}
 				$this->session->set('auth', new \Auth($user));
 				$this->response->redirect("home/index");
 				return;
@@ -98,6 +111,11 @@ class UserController extends \Phalcon\Mvc\Controller {
 	public function signoutAction() {
 		//Destroy the whole session
 		$this->session->destroy();
+		// if remember-me cookies was set - kill them all!! boohaha
+		if ($this->cookies->has('remember-me') && $this->cookies->has('remember-me-code')) {
+			$this->cookies->get('remember-me')->delete();
+			$this->cookies->get('remember-me-code')->delete();
+		}
 		return $this->response->redirect('index/index');
 	}
 
