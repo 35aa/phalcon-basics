@@ -4,10 +4,7 @@ class UserToRememberMe extends \Phalcon\Mvc\Model {
 
 	public function create($data = array(), $whiteList = array()) {
 		if (count($data)) $this->assign($data);
-			$this->generateToken();
-			$this->last_updated = time();
-			$this->save();
-			return $this;
+		return $this->renewCode();
 	}
 
 	public function getCodeByUserID($user_id) {
@@ -23,6 +20,12 @@ class UserToRememberMe extends \Phalcon\Mvc\Model {
 		$this->last_updated = time();
 		$this->save();
 		return $this;
+	}
+
+	public function renewCodeByUserID($user_id) {
+		$code = $this->getCodeByUserID($user_id);
+		$code->renewCode();
+		return $code;
 	}
 
 	public function generateToken() {

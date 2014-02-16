@@ -44,43 +44,43 @@ try {
 		}
 		return  $connection; });
 
+	$di->set('crypt', function() {
+		$crypt = new \Phalcon\Crypt();
+		$crypt->setKey('+N+~j!Oc%>{#^h@8.K');
+		return $crypt;
+	});
+
 	//Start the session the first time when some component request the session service
 	$di->setShared('session', function() {return \Framework\Session\Init::session(); });
 
 	$di->set('cookies', function() {
-		$cookies = new \Phalcon\Http\Response\Cookies();
+		$cookies = new \Framework\Cookies();
 		$userToRememberMeTable = new \UserToRememberMe();
 		// remember-me
 		if ($cookies->has('remember-me') && $cookies->has('remember-me-code')) {
+			$newCode = null;
 			if ($code = $userToRememberMeTable->getCodeByCode($cookies->get('remember-me-code')->getValue())) {
 				$newCode = $code->renewCode();
 				// set new cookie
-				$cookies->get('remember-me-code')->setValue($newCode->code);
-				$cookies->get('remember-me-code')->setExpiration(time() + 15 * 86400);
-				$cookies->get('remember-me-code')->send();
-				$cookies->get('remember-me')->setValue(1);
-				$cookies->get('remember-me')->setExpiration($cookies->get('remember-me-code')->getExpiration());
-				$cookies->get('remember-me')->send();
-			} else {
-				$cookies->get('remember-me')->delete();
-				$cookies->get('remember-me-code')->delete();
+				$cookies->updateCookies($newCode->code);
 			}
-		} else {
-			// if we lose one of our cookies - kill the rest cookie
-			$cookies->get('remember-me')->delete();
-			$cookies->get('remember-me-code')->delete();
 		}
-		$cookies->useEncryption(false);
+		if (!$newCode) {
+			// if we lose one of our cookies - kill the rest cookie
+			$cookies->removeCookies();
+		}
 		return $cookies;
 	});
 
+	// This method is required for remember-me function
 	$di->set('dispatcher', function() use ($di) {
 		//Create an event manager
 		$eventsManager = new \Phalcon\Events\Manager();
 		//Attach a listener for type "dispatch"
 		$eventsManager->attach("dispatch:beforeDispatchLoop", function($event, $dispatcher) use ($di) {
-			// remember-me
+			// Initialize session
 			$di->get('session')->get('auth');
+			// Initialize cookies and renew it on client side
 			$di->get('cookies')->has('remember-me');
 		});
 		$dispatcher = new \Phalcon\Mvc\Dispatcher;

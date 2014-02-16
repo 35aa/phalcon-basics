@@ -5,7 +5,7 @@ namespace Framework\Session;
 class Init {
 
 	public static function session() {
-		$cookies = new \Phalcon\Http\Response\Cookies();
+		$cookies = new \Framework\Cookies();
 		$session = new \Phalcon\Session\Adapter\Files();
 		$session->start();
 		if (!$session->get('auth')) {
@@ -16,14 +16,9 @@ class Init {
 					$usersTable = new \Users();
 					$session->set('auth', new \Auth($usersTable->getUserById($rememberMe->user_id)));
 				}
-				else {
-					$cookies->get('remember-me')->delete();
-					$cookies->get('remember-me-code')->delete();
-				}
 			}
-			else {
-				$cookies->get('remember-me')->delete();
-				$cookies->get('remember-me-code')->delete();
+			if (!$session->get('auth')) {
+				$cookies->removeCookies();
 			}
 		}
 		elseif ($session->get('auth')->isExpired()) {

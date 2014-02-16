@@ -79,16 +79,12 @@ class UserController extends \Phalcon\Mvc\Controller {
 				// remember me
 				if (isset($validatedData->remember_me) && $validatedData->remember_me) {
 					$userToRememberMeTable = new UserToRememberMe();
-					if ($existed = $userToRememberMeTable->getCodeByUserID($user->id)) {
-						// update existed record
-						$rememberMe = $existed->renewCode();
-					} else {
+					if (!($rememberMe = $userToRememberMeTable->renewCodeByUserID($user->id))) {
 						// create new
 						$rememberMe = $userToRememberMeTable->create(array('user_id' => $user->id));
 					}
 					// set cookies
-					$this->cookies->set('remember-me', '1', time() + 15 * 86400);
-					$this->cookies->set('remember-me-code', $rememberMe->code, time() + 15 * 86400);
+					$this->cookies->setCookies($rememberMe->code);
 				}
 				$this->session->set('auth', new \Auth($user));
 				$this->response->redirect("home/index");
@@ -113,8 +109,7 @@ class UserController extends \Phalcon\Mvc\Controller {
 		$this->session->destroy();
 		// if remember-me cookies was set - kill them all!! boohaha
 		if ($this->cookies->has('remember-me') && $this->cookies->has('remember-me-code')) {
-			$this->cookies->get('remember-me')->delete();
-			$this->cookies->get('remember-me-code')->delete();
+			$this->cookies->removeCookies();
 		}
 		return $this->response->redirect('index/index');
 	}
