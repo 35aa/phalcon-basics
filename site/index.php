@@ -57,15 +57,14 @@ try {
 		$cookies = new \Framework\Cookies();
 		$userToRememberMeTable = new \UserToRememberMe();
 		// remember-me
+		$code = null;
 		if ($cookies->has('remember-me') && $cookies->has('remember-me-code')) {
-			$newCode = null;
 			if ($code = $userToRememberMeTable->getCodeByCode($cookies->get('remember-me-code')->getValue())) {
-				$newCode = $code->renewCode();
 				// set new cookie
-				$cookies->updateCookies($newCode->code);
+				$cookies->updateCookies($code->renewCode()->code);
 			}
 		}
-		if (!$newCode) {
+		if (!$code) {
 			// if we lose one of our cookies - kill the rest cookie
 			$cookies->removeCookies();
 		}
