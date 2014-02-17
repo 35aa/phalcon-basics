@@ -7,7 +7,7 @@ date_default_timezone_set('Europe/Kiev');
 try {
 
 	//Read the configuration
-	$config = new Phalcon\Config\Adapter\Ini(__DIR__.'/../app/config/config.ini');
+	$config = new \Phalcon\Config\Adapter\Ini(__DIR__.'/../app/config/config.ini');
 
 	//Register an autoloader
 	$loader = new \Phalcon\Loader();
@@ -16,7 +16,7 @@ try {
 	$loader->registerDirs($config->path->toArray())->register();
 
 	//Create a DI
-	$di = new Phalcon\DI\FactoryDefault();
+	$di = new \Phalcon\DI\FactoryDefault();
 
 	$di->set('config', $config);
 
@@ -33,28 +33,61 @@ try {
 	$di->set('db', function() use ($config) {
 		$connection = new \Phalcon\Db\Adapter\Pdo\Mysql($config->database->toArray());
 		if (getenv('APPLICATION_ENV') == 'devel') {
-			$eventsManager = new Phalcon\Events\Manager();
+			$eventsManager = new \Phalcon\Events\Manager();
 			$eventsManager->attach('db', function($event, $connection) {
 				if ($event->getType() == 'beforeQuery') {
-				  //Start a profile with the active connection
-				  error_log($connection->getSQLStatement()."\n".json_encode($connection->getSQLVariables()));
+					//Start a profile with the active connection
+					// error_log($connection->getSQLStatement()."\n".json_encode($connection->getSQLVariables()));
 				}
 			});
 			$connection->setEventsManager($eventsManager);
 		}
 		return  $connection; });
 
+	$di->set('crypt', function() {
+		$crypt = new \Phalcon\Crypt();
+		$crypt->setKey('+N+~j!Oc%>{#^h@8.K');
+		return $crypt;
+	});
+
 	//Start the session the first time when some component request the session service
-	$di->setShared('session', function() {
-		$session = new Phalcon\Session\Adapter\Files();
-		$session->start();
-		if (!$session->get('auth')) $session->set('auth', new \Auth());
-		elseif ($session->get('auth')->isExpired()) {
-			$session->destroy();
-			$session->set('auth', new \Auth());
+	$di->setShared('session', function() {return \Framework\Session\Init::session(); });
+
+	$di->set('cookies', function() {
+		$cookies = new \Framework\Cookies();
+		$userToRememberMeTable = new \UserToRememberMe();
+		// remember-me
+		if ($cookies->has('remember-me') && $cookies->has('remember-me-code')) {
+			$newCode = null;
+			if ($code = $userToRememberMeTable->getCodeByCode($cookies->get('remember-me-code')->getValue())) {
+				$newCode = $code->renewCode();
+				// set new cookie
+				$cookies->updateCookies($newCode->code);
+			}
 		}
-		$session->get('auth')->resetTimeout();
-		return $session; });
+		if (!$newCode) {
+			// if we lose one of our cookies - kill the rest cookie
+			$cookies->removeCookies();
+		}
+		return $cookies;
+	});
+
+	// This method is required for remember-me function
+	$di->set('dispatcher', function() use ($di) {
+		//Create an event manager
+		$eventsManager = new \Phalcon\Events\Manager();
+		//Attach a listener for type "dispatch"
+		$eventsManager->attach("dispatch:beforeDispatchLoop", function($event, $dispatcher) use ($di) {
+			// Initialize session
+			$di->get('session')->get('auth');
+			// Initialize cookies and renew it on client side
+			$di->get('cookies')->has('remember-me');
+		});
+		$dispatcher = new \Phalcon\Mvc\Dispatcher;
+		//Bind the eventsManager to the view component
+		$dispatcher->setEventsManager($eventsManager);
+		return $dispatcher;
+	}, true);
 
 	//Handle the request
 	$application = new \Phalcon\Mvc\Application($di);
@@ -64,6 +97,7 @@ try {
 	$application->getDI()->getResponse()->setContentType('text/html', 'UTF-8');
 
 	echo $application->handle()->getContent();
+
 }
 catch(\Phalcon\Exception $e) {
 	error_log("PhalconException: ". $e->getMessage());

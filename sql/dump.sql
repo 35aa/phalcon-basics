@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.33, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.5.35, for debian-linux-gnu (armv7l)
 --
 -- Host: localhost    Database: phalcon
 -- ------------------------------------------------------
--- Server version	5.5.33-1
+-- Server version	5.5.35-0+wheezy1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -29,7 +29,23 @@ CREATE TABLE `user_email_verifications` (
   `salt` varchar(22) NOT NULL,
   `created` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=129 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `user_to_remember_me`
+--
+
+DROP TABLE IF EXISTS `user_to_remember_me`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_to_remember_me` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `user_id` char(32) NOT NULL,
+  `code` char(32) NOT NULL,
+  `last_updated` int(10) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -66,7 +82,7 @@ CREATE TABLE `users_emails` (
   `verified` int(10) DEFAULT NULL,
   `deleted` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=138 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -78,4 +94,4 @@ CREATE TABLE `users_emails` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-01-05 19:41:09
+-- Dump completed on 2014-02-14 12:48:32
