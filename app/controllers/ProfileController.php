@@ -1,6 +1,6 @@
 <?php
 
-class ProfileController extends \Phalcon\Mvc\Controller {
+class ProfileController extends \Framework\AbstractController {
 
 	public function initialize() {
 		if (!$this->session->get('auth')->isAuthenticated()) return $this->response->redirect("user/signin");//redirect to index/index page

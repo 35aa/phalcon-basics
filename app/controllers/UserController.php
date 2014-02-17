@@ -1,9 +1,14 @@
 <?php
 
-class UserController extends \Phalcon\Mvc\Controller {
+class UserController extends \Framework\AbstractController {
 
-	public function initialize() {
-		if ($this->session->get('auth')->isAuthenticated()) {$this->response->redirect("home/index");}//redirect to index/index page
+	public function beforeExecuteRoute(\Phalcon\Mvc\Dispatcher $dispatcher) {
+		if ($this->session->get('auth')->isAuthenticated()) {
+			if ($dispatcher->getActionName() != 'signout') {
+				$dispatcher->forward(array('controller' => 'home','action' => 'index'));
+				return false;
+			}
+		}
 	}
 
 	public function indexAction() {}
