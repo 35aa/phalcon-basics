@@ -3,6 +3,7 @@
 namespace UserForm;
 
 class VerifyEmailForm extends \Phalcon\Forms\Form {
+
 	public function initialize() {
 		$element = new \Phalcon\Forms\Element\Text('id');
 		$element->addValidators(array(
@@ -19,4 +20,5 @@ class VerifyEmailForm extends \Phalcon\Forms\Form {
 						'min' => 59 )) ));
 		$this->add($element);
 	}
+
 }

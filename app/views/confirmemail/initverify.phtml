@@ -3,6 +3,7 @@
 <?php echo \Phalcon\Tag::javascriptInclude("js/config.js"); ?>
 </head>
 <body>
+	<h1 class="page-header">Manual email activation</h1>
 <?php use Phalcon\Tag as Tag; ?>
 <?=Tag::form(array($this->view->form->getAction())) ?>
 
@@ -11,7 +12,9 @@
 		<?php echo $form->render('email') ?>
 	</p>
 
-	<p><?php if ($this->view->captcha->getError()) ?><span style="color:red; font-weight:bold"><?php echo $this->view->captcha->getError() ?></span>
+	<p>
+		<label>Captcha:</label>
+		<?php if ($this->view->captcha->getError()) ?><span style="color:red; font-weight:bold"><?php echo $this->view->captcha->getError() ?></span>
 		<?php echo $this->view->captcha->getHtml()?>
 	</p>
 
