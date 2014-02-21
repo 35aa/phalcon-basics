@@ -6,6 +6,8 @@
 
 	<h1 class="page-header">Sign Up</h1>
 
+<?if ($this->view->getVar('sign_up_enable')) {?>
+
 <?php $form = $this->view->form; echo $this->tag->form($form->getAction()) ?>
 
 	<div class="form-group">
@@ -49,5 +51,13 @@
 <?=$form->render('submit') ?>
 
 </form>
+
+<? } else { ?>
+
+<p>Sorry but at current time registration was closed. Please try to sign up later.</p>
+<p>Thanks!</p>
+
+<? } ?>
+
 </body>
 </html>
