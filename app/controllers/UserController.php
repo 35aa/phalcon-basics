@@ -19,6 +19,8 @@ class UserController extends \Framework\AbstractController {
 	}
 
 	public function registerAction() {
+		// check if sign_up_enable option is true
+		if (!$this->view->getVar('sign_up_enable')) return $this->response->redirect('user/signup');
 		$emailRegistered = false;
 		$captcha = null;
 		$form = null;

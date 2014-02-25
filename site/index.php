@@ -26,6 +26,7 @@ try {
 		$view->setViewsDir($config->view->dir);
 		$view->setTemplateAfter('main');
 		$view->setVar('bootstrap_enable', $config->view->bootstrap);
+		$view->setVar('sign_up_enable', $config->application->signUp);
 		return $view;
 	});
 
