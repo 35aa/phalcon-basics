@@ -53,8 +53,11 @@ class Auth {
 	}
 
 	public function getUserCredentials() {
-		return array('id' => $this->user['id']);
+		return array('id' => $this->getUserId());
 	}
 
+	public function getUserId() {
+		return $this->user['id'];
+	}
 }
 

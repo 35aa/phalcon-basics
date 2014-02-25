@@ -94,6 +94,98 @@ class UserController extends \Phalcon\Mvc\Controller {
 
 	}
 
+	public function forgotpasswordAction() {
+		if (!$this->view->form) $this->view->setVar('form', new UserForm\ForgotPassword());
+		if (!$this->view->captcha) {
+			$this->view->setVar('captcha', new Captcha\Captcha($this->getDI()->get('config')->recaptcha));
+		}
+	}
+
+	public function sendresetpasswordAction() {
+		$captcha = null;
+		$form = null;
+		$emailSent = false;
+		if ($this->getDI()->getRequest()->isPost()) {
+			$form = new UserForm\ForgotPassword();
+			$captcha = new Captcha\Captcha($this->getDI()->get('config')->recaptcha);
+
+			$usersTable = new Users();
+			$validatedData = (Object) Array();
+			if ($form->isValid($this->getDI()->getRequest()->getPost(), $validatedData)
+					&& $captcha->checkAnswer($this->getDI()->getRequest())
+					&& $user = $usersTable->getUserByPrimaryEmail($validatedData->email)) {
+
+				$emailSent = true;
+				$user->getPrimaryEmail()->sendResetPasswordEmail($this->getDI()->get('config'));
+				return $this->view->pick('user/reset_confirmation');
+			}
+		}
+
+		if ($form) {
+			$this->view->setVars(array('captcha' => $captcha, 'form' => $form));
+		}
+
+		if (!$emailSent) {
+			$this->dispatcher->forward(array(
+					"controller" => "user",
+					"action" => "forgotpassword" ));
+		}
+
+	}
+
+	public function resetpasswordAction() {
+		if (!$this->session->get('reset-auth')) {
+			$this->dispatcher->forward(array(
+					"controller" => "user",
+					"action" => "signin" ));
+		}
+		if (!$this->view->form) $this->view->setVar('form', new UserForm\ResetPassword());
+		if (!$this->view->captcha) {
+			$this->view->setVar('captcha', new Captcha\Captcha($this->getDI()->get('config')->recaptcha));
+		}
+		$this->view->form->get('password')->clear();
+		$this->view->form->get('confirmPassword')->clear();
+	}
+
+	public function setnewpasswordAction() {
+		if (!$this->session->get('reset-auth')) {
+			$this->dispatcher->forward(array(
+					"controller" => "user",
+					"action" => "signin" ));
+		}
+		$captcha = null;
+		$form = null;
+		$user = null;
+		if ($this->getDI()->getRequest()->isPost()) {
+			$form = new UserForm\ResetPassword();
+			$captcha = new Captcha\Captcha($this->getDI()->get('config')->recaptcha);
+
+			$usersTable = new Users();
+			$validatedData = (Object) Array();
+			if ($form->isValid($this->getDI()->getRequest()->getPost(), $validatedData)
+					&& $captcha->checkAnswer($this->getDI()->getRequest())
+					&& $user = $usersTable->getUserById($this->session->get('reset-auth')->getUserId())) {
+
+				$user->hashPassword($validatedData->password);
+				$user->save();
+				$this->session->remove('reset-auth');
+				$this->session->set('auth', new \Auth($user));
+				return $this->dispatcher->forward(array(
+							"controller" => "home",
+							"action" => "index" ));
+				}
+		}
+
+		if ($form) {
+			$this->view->setVars(array('captcha' => $captcha, 'form' => $form));
+		}
+
+		$this->dispatcher->forward(array(
+				"controller" => "user",
+				"action" => "resetpassword" ));
+
+	}
+
 	public function signoutAction() {
 		//Destroy the whole session
 		$this->session->destroy();

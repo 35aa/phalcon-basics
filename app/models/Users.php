@@ -53,12 +53,29 @@ class Users extends \Phalcon\Mvc\Model {
 		$user = self::findFirst(array('id=:id:', 'bind'=>array('id'=>$id)));
 		if (!$user) return;
 		// get all user emails
-		$userEmails = $user->getEmails();
-		foreach ($userEmails as $email) {
+		foreach ($user->getEmails() as $email) {
 			if (!$email->verified) {
-				if ($email->verify($code)) {
+				if ($email->getVerificationCode(UserVerificationCodes::REASON_EMAIL_VERIFICATION)
+						&& $email->getVerificationCode(UserVerificationCodes::REASON_EMAIL_VERIFICATION)->verifyCode($code) ) {
 					// set user as active
 					$user->setUserActive();
+					$email->setEmailVerified();
+					break;
+				}
+			}
+		}
+		return $user;
+	}
+
+	public function findUserForResetPasswordByIdAndCode($id, $code) {
+		$user = self::findFirst(array('id=:id:', 'bind'=>array('id'=>$id)));
+		if (!$user) return;
+		// get all user emails
+		$userEmails = $user->getEmails();
+		foreach ($userEmails as $email) {
+			if ($email->verified) {
+				if ($email->getVerificationCode(UserVerificationCodes::REASON_RESET_PASSWORD)
+						&& $email->getVerificationCode(UserVerificationCodes::REASON_RESET_PASSWORD)->verifyCode($code) ) {
 					return $user;
 				}
 			}
@@ -78,6 +95,17 @@ class Users extends \Phalcon\Mvc\Model {
 			if ($user->checkPassword($password)) return $user;
 		}
 		return null;
+	}
+
+	public function getUserByPrimaryEmail($email) {
+		$emailsTable = new UsersEmails();
+		$emails = $emailsTable->getVerifiedPrimaryEmailsByEmail($email);
+		$user = null;
+		foreach ($emails as $primaryEmail) {
+			$user = self::findFirst(array('id = :user_id: AND active = 1', 'bind' => array('user_id' => $primaryEmail->user_id)));
+			break;
+		}
+		return $user;
 	}
 
 	public function setNewUsername($name) {
