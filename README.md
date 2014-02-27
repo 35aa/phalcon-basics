@@ -1,6 +1,6 @@
-phalcon-basics
+neprote.com
 ==============
 
-It is sandbox for implementing some features and try the phalcon-php.
+This is the main repo for neprote.com
 
 Thanks
