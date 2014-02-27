@@ -25,7 +25,7 @@ class ResetPassword extends \Phalcon\Forms\Form {
 		$element = new \Phalcon\Forms\Element\Password('confirmPassword', array('size' => '15', 'maxlength'=>30));
 		$this->add($element);
 
-		$element = new \Phalcon\Forms\Element\Submit('submit', array('value'=>'Login'));
+		$element = new \Phalcon\Forms\Element\Submit('submit', array('value'=>'Save'));
 		$this->add($element);
 	}
 }

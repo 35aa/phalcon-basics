@@ -35,8 +35,14 @@ class ConfirmemailController extends \Phalcon\Mvc\Controller {
 		$form = new UserForm\VerifyEmailForm();
 		$validatedData = (Object) Array();
 		$users = new Users();
+		// validate data and try to ghet user by user id and validation code
 		if ($form->isValid($this->getDI()->getRequest()->getQuery(), $validatedData)
 				&& ($user = $users->findUserForResetPasswordByIdAndCode($validatedData->id, $validatedData->code))) {
+			// Create new auth instance in session.
+			// We could not use default auth location because in this case we could not use user controller.
+			// Also we should not allow to use current data as default auth object without changing password.
+			// I do not want to place change password functionlity here.
+			// It should belong to user controller.
 			$this->session->set('reset-auth', new \Auth($user));
 			return $this->dispatcher->forward(array(
 				"controller" => "user",
@@ -49,6 +55,8 @@ class ConfirmemailController extends \Phalcon\Mvc\Controller {
 		return $this->view->pick('confirmemail/reset_password');
 	}
 
+	// use rredirected to this action when he was arrived to resetpassword action,
+	// but for some reason previous action failed to achieve success.
 	public function resendresetpasswordAction() {
 		$this->view->setVar('form', new ConfirmEmailForm\ResetPassword());
 		$this->view->setVar('captcha', new Captcha\Captcha($this->getDI()->get('config')->recaptcha));
@@ -57,10 +65,11 @@ class ConfirmemailController extends \Phalcon\Mvc\Controller {
 			$resetPassword = (Object) Array();
 			$usersTable = new Users();
 
+			// validate data and try to find user by email
 			if ($this->view->form->isValid($this->getDI()->getRequest()->getPost(), $resetPassword)
 					&& $this->view->captcha->checkAnswer($this->getDI()->getRequest())
 					&& ($user = $usersTable->getUserByPrimaryEmail($resetPassword->email)) ) {
-				// send verification data
+				// send reset password email
 				$user->getPrimaryEmail()->sendResetPasswordEmail($this->getDI()->get('config'));
 				return $this->view->pick('confirmemail/reset_confirmation');
 			}

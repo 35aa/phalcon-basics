@@ -44,8 +44,9 @@ class UserVerificationCodes extends \Phalcon\Mvc\Model {
 	}
 
 	public function loadVerificationObjectForEmail($email, $reason) {
-		return self::find(array('email_id=:email_id: AND reason=:reason:',
-														'bind'=>array('email_id'=>$email->id, 'reason'=>$reason),
-														'order' => 'created desc' ));
+		return self::find(array(
+				'email_id=:email_id: AND reason=:reason:',
+				'bind'=>array('email_id'=>$email->id, 'reason'=>$reason),
+				'order' => 'created desc' ));
 	}
 }

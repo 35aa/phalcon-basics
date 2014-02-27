@@ -104,18 +104,18 @@ class UserController extends \Phalcon\Mvc\Controller {
 	public function sendresetpasswordAction() {
 		$captcha = null;
 		$form = null;
-		$emailSent = false;
 		if ($this->getDI()->getRequest()->isPost()) {
 			$form = new UserForm\ForgotPassword();
 			$captcha = new Captcha\Captcha($this->getDI()->get('config')->recaptcha);
 
 			$usersTable = new Users();
 			$validatedData = (Object) Array();
+			//validate data and try to get user by email
 			if ($form->isValid($this->getDI()->getRequest()->getPost(), $validatedData)
 					&& $captcha->checkAnswer($this->getDI()->getRequest())
 					&& $user = $usersTable->getUserByPrimaryEmail($validatedData->email)) {
 
-				$emailSent = true;
+				//send reset password email
 				$user->getPrimaryEmail()->sendResetPasswordEmail($this->getDI()->get('config'));
 				return $this->view->pick('user/reset_confirmation');
 			}
@@ -125,12 +125,9 @@ class UserController extends \Phalcon\Mvc\Controller {
 			$this->view->setVars(array('captcha' => $captcha, 'form' => $form));
 		}
 
-		if (!$emailSent) {
-			$this->dispatcher->forward(array(
-					"controller" => "user",
-					"action" => "forgotpassword" ));
-		}
-
+		$this->dispatcher->forward(array(
+				"controller" => "user",
+				"action" => "forgotpassword" ));
 	}
 
 	public function resetpasswordAction() {
@@ -162,13 +159,17 @@ class UserController extends \Phalcon\Mvc\Controller {
 
 			$usersTable = new Users();
 			$validatedData = (Object) Array();
+			// validate data and try to get user by user id
+			// here we use auth object created in confirmemail controller
 			if ($form->isValid($this->getDI()->getRequest()->getPost(), $validatedData)
 					&& $captcha->checkAnswer($this->getDI()->getRequest())
 					&& $user = $usersTable->getUserById($this->session->get('reset-auth')->getUserId())) {
 
-				$user->hashPassword($validatedData->password);
-				$user->save();
+				//seve new password
+				$user->saveNewPassword($validatedData->password);
+				//remove temporary session object used for reset password
 				$this->session->remove('reset-auth');
+				//now we could safely allow user to use this session object
 				$this->session->set('auth', new \Auth($user));
 				return $this->dispatcher->forward(array(
 							"controller" => "home",

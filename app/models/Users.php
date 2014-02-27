@@ -21,7 +21,11 @@ class Users extends \Phalcon\Mvc\Model {
 		$this->salt = $security->getSaltBytes();
 		$this->password = $security->hash($password.$this->salt, 10);
 	}
-	
+
+	public function saveNewPassword($password) {
+		$this->hashPassword($password);
+		$this->save();
+	}
 
 	public function checkPassword($password) {
 		$security = new Phalcon\Security();
