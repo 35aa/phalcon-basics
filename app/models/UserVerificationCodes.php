@@ -1,8 +1,11 @@
 <?php
 
-class UserEmailVerifications extends \Phalcon\Mvc\Model {
+class UserVerificationCodes extends \Phalcon\Mvc\Model {
 
 	const VERIFICATION_CODE_LIFESPAN = 18000; // 5 hours
+
+	const REASON_EMAIL_VERIFICATION = 'emailVerification';
+	const REASON_RESET_PASSWORD = 'resetPassword';
 
 	protected $_secure_verification_code;
 
@@ -11,6 +14,7 @@ class UserEmailVerifications extends \Phalcon\Mvc\Model {
 		$this->getVerificationCode();
 		$this->created = time();
 		parent::create($data, $whiteList);
+		return $this;
 	}
 
 	public function getVerificationCode() {
@@ -31,7 +35,18 @@ class UserEmailVerifications extends \Phalcon\Mvc\Model {
 		return $security->checkHash($this->verification_code.$this->salt, $verification_code);
 	}
 
-	public function loadVerificationObjectForEmail($email) {
-		return self::find(array('email_id=:email_id:','bind'=>array('email_id'=>$email->id), 'order' => 'created desc'));
+	public function findVerificationCode($email, $reason){
+		foreach ($this->loadVerificationObjectForEmail($email, $reason) as $verificationCode) {
+			if ($verificationCode->created + UserVerificationCodes::VERIFICATION_CODE_LIFESPAN > time()) {
+				return $verificationCode;
+			}
+		}
+	}
+
+	public function loadVerificationObjectForEmail($email, $reason) {
+		return self::find(array(
+				'email_id=:email_id: AND reason=:reason:',
+				'bind'=>array('email_id'=>$email->id, 'reason'=>$reason),
+				'order' => 'created desc' ));
 	}
 }

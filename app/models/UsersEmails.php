@@ -3,6 +3,11 @@
 class UsersEmails extends \Phalcon\Mvc\Model {
 
 	protected $verificationObject;
+	protected $verificationCode;
+
+	public function onConstruct() {
+		$this->verificationObject = new UserVerificationCodes();
+	}
 
 	public function createEmail($email) {
 		$this->create(array('user_id' => $email->user_id, 'email' => $email->email, 'is_primary' => $email->is_primary));
@@ -20,6 +25,12 @@ class UsersEmails extends \Phalcon\Mvc\Model {
 		$email->send($this, $config->application->fromEmail, $config->application->baseUri);
 	}
 
+	public function sendResetPasswordEmail($config) {
+		//email validation
+		$email = new Mail\ResetPassword();
+		$email->send($this, $config->application->fromEmail, $config->application->baseUri);
+	}
+
 	public function getEmailByEmailID($email_id) {
 		return self::findFirst(array('id = :email_id:', 'bind' => array('email_id' => $email_id)));
 	}
@@ -32,34 +43,19 @@ class UsersEmails extends \Phalcon\Mvc\Model {
 		return self::findFirst(array('email = :email: AND deleted IS NULL', 'bind' => array('email' => $email))) != null;
 	}
 
-	public function createVerificationObject() {
-		$this->verificationObject = new UserEmailVerifications();
-		$this->verificationObject->create(array('email_id' => $this->id));
+	public function createVerificationCode($reason) {
+		$this->verificationCode = $this->verificationObject->create(array('email_id' => $this->id, 'reason' => $reason));
+		return $this->verificationCode;
 	}
 
-	public function getVerificationObject() {
-		// create verification data for new user
-		if ($this->verificationObject) return $this->verificationObject;
-		$emailVerificationTable = new UserEmailVerifications();
-		foreach ($emailVerificationTable->loadVerificationObjectForEmail($this) as $verificationObject) {
-			if ($verificationObject->created + UserEmailVerifications::VERIFICATION_CODE_LIFESPAN > time()) {
-				$this->verificationObject = $verificationObject;
-				break;
-			}
-		}
-		return $this->verificationObject;
+	public function getVerificationCode($reason) {
+		if ($this->verificationCode) return $this->verificationCode;
+		$this->verificationCode = $this->verificationObject->findVerificationCode($this, $reason);
+		return $this->verificationCode;
 	}
 
 	public function getEmailsForUser($user_id) {
 		return self::find(array('user_id = :user_id: AND deleted IS NULL', 'bind' => array('user_id' => $user_id)));
-	}
-
-	public function verify($code) {
-		if (!$this->getVerificationObject()) return false;
-		if ($this->getVerificationObject()->verifyCode($code)) {
-			$this->setEmailVerified();
-			return true;
-		}
 	}
 
 	public function getEmailByIDandUserID($email) {

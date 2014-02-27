@@ -3,9 +3,9 @@
 Доброго дня!<br /><br />
 
 Ваш email було використано для реєстрації на ресурсі <?=$server?>.<br />
-Для підтвердження реєстрації будь ласка перейдіть <a href="<?=$server?>/confirmemail?id=<?=urlencode($primaryEmail->user_id)?>&code=<?=urlencode($primaryEmail->getVerificationObject()->getVerificationCode())?>">сюди</a> або відкрийте наступне посилання в бровзері:<br /><br />
+Для підтвердження реєстрації будь ласка перейдіть <a href="<?=$server?>/confirmemail?id=<?=urlencode($primaryEmail->user_id)?>&code=<?=urlencode($primaryEmail->createVerificationCode(UserVerificationCodes::REASON_EMAIL_VERIFICATION)->getVerificationCode())?>">сюди</a> або відкрийте наступне посилання в бровзері:<br /><br />
 
-<?=$server?>/confirmemail?id=<?=urlencode($primaryEmail->user_id)?>&code=<?=urlencode($primaryEmail->getVerificationObject()->getVerificationCode())?><br /><br />
+<?=$server?>/confirmemail?id=<?=urlencode($primaryEmail->user_id)?>&code=<?=urlencode($primaryEmail->getVerificationCode(UserVerificationCodes::REASON_EMAIL_VERIFICATION)->getVerificationCode())?><br /><br />
 
 Наведений лінк діє 5 годин. Після цього Ваш аккаунт автоматично деактивується.<br /><br />
 
