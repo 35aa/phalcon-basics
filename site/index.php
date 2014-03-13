@@ -21,37 +21,16 @@ try {
 	$di->set('config', $config);
 
 	//Setting up the view component
-	$di->set('view', function() use ($config) {
-		$view = new \Phalcon\Mvc\View();
-		$view->setViewsDir($config->view->dir);
-		return $view; });
+	$di->set('view', call_user_func('InitApp::initView'));
 
 	//Start the session the first time when some component request the session service
-	$di->set('db', function() use ($config) {
-		$connection = new \Phalcon\Db\Adapter\Pdo\Mysql($config->database->toArray());
-		if (getenv('APPLICATION_ENV') == 'devel') {
-			$eventsManager = new Phalcon\Events\Manager();
-			$eventsManager->attach('db', function($event, $connection) {
-				if ($event->getType() == 'beforeQuery') {
-				  //Start a profile with the active connection
-				  error_log($connection->getSQLStatement()."\n".json_encode($connection->getSQLVariables()));
-				}
-			});
-			$connection->setEventsManager($eventsManager);
-		}
-		return  $connection; });
+	$di->set('db', call_user_func('InitApp::initDb'));
 
 	//Start the session the first time when some component request the session service
-	$di->setShared('session', function() {
-		$session = new Phalcon\Session\Adapter\Files();
-		$session->start();
-		if (!$session->get('auth')) $session->set('auth', new \Auth());
-		elseif ($session->get('auth')->isExpired()) {
-			$session->destroy();
-			$session->set('auth', new \Auth());
-		}
-		$session->get('auth')->resetTimeout();
-		return $session; });
+	$di->setShared('session', call_user_func('InitApp::initSession'));
+
+	//add dispatcher which handle wrong controllers and actions and other errors
+	$di->set('dispatcher', call_user_func('InitApp::initDispatcher'), true);
 
 	//Handle the request
 	$application = new \Phalcon\Mvc\Application($di);
