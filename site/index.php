@@ -21,73 +21,20 @@ try {
 	$di->set('config', $config);
 
 	//Setting up the view component
-	$di->set('view', function() use ($config) {
-		$view = new \Phalcon\Mvc\View();
-		$view->setViewsDir($config->view->dir);
-		$view->setTemplateAfter('main');
-		$view->setVar('bootstrap_enable', $config->view->bootstrap);
-		$view->setVar('sign_up_enable', $config->application->signUp);
-		return $view;
-	});
+	$di->set('view', call_user_func('InitApp::initView'));
 
 	//Start the session the first time when some component request the session service
-	$di->set('db', function() use ($config) {
-		$connection = new \Phalcon\Db\Adapter\Pdo\Mysql($config->database->toArray());
-		if (getenv('APPLICATION_ENV') == 'devel') {
-			$eventsManager = new \Phalcon\Events\Manager();
-			$eventsManager->attach('db', function($event, $connection) {
-				if ($event->getType() == 'beforeQuery') {
-					//Start a profile with the active connection
-					// error_log($connection->getSQLStatement()."\n".json_encode($connection->getSQLVariables()));
-				}
-			});
-			$connection->setEventsManager($eventsManager);
-		}
-		return  $connection; });
+	$di->set('db', call_user_func('InitApp::initDb'));
 
-	$di->set('crypt', function() {
-		$crypt = new \Phalcon\Crypt();
-		$crypt->setKey('+N+~j!Oc%>{#^h@8.K');
-		return $crypt;
-	});
+	$di->set('crypt', call_user_func('InitApp::initCrypt'));
 
 	//Start the session the first time when some component request the session service
 	$di->setShared('session', function() {return \Framework\Session\Init::session(); });
 
-	$di->set('cookies', function() {
-		$cookies = new \Framework\Cookies();
-		$userToRememberMeTable = new \UserToRememberMe();
-		// remember-me
-		$code = null;
-		if ($cookies->has('remember-me') && $cookies->has('remember-me-code')) {
-			if ($code = $userToRememberMeTable->getCodeByCode($cookies->get('remember-me-code')->getValue())) {
-				// set new cookie
-				$cookies->updateCookies($code->renewCode()->code);
-			}
-		}
-		if (!$code) {
-			// if we lose one of our cookies - kill the rest cookie
-			$cookies->removeCookies();
-		}
-		return $cookies;
-	});
+	$di->set('crypt', call_user_func('InitApp::initCookies'));
 
-	// This method is required for remember-me function
-	$di->set('dispatcher', function() use ($di) {
-		//Create an event manager
-		$eventsManager = new \Phalcon\Events\Manager();
-		//Attach a listener for type "dispatch"
-		$eventsManager->attach("dispatch:beforeDispatchLoop", function($event, $dispatcher) use ($di) {
-			// Initialize session
-			$di->get('session')->get('auth');
-			// Initialize cookies and renew it on client side
-			$di->get('cookies')->has('remember-me');
-		});
-		$dispatcher = new \Phalcon\Mvc\Dispatcher;
-		//Bind the eventsManager to the view component
-		$dispatcher->setEventsManager($eventsManager);
-		return $dispatcher;
-	}, true);
+	//add dispatcher which handle wrong controllers and actions and other errors
+	$di->set('dispatcher', call_user_func('InitApp::initDispatcher'), true);
 
 	//Handle the request
 	$application = new \Phalcon\Mvc\Application($di);
