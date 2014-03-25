@@ -1,7 +1,7 @@
 <h1 class="page-header">Profile</h1>
 <p>
 	Username: 
-	<?=$this->view->getVar('user')->name?>
+	<?=$this->view->getVar('escaper')->escapeHtml($this->view->getVar('user')->name)?>
 	<a href='/profile/username'>edit</a>
 </p>
 
