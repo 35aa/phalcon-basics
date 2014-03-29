@@ -1,6 +1,6 @@
 <?php
 
-class LoginController extends \Phalcon\Mvc\Controller {
+class LoginController extends \Framework\AbstractController {
 
 	public function beforeExecuteRoute(\Phalcon\Mvc\Dispatcher $dispatcher) {
 		if ($this->session->get('auth')->isAuthenticated()) {
