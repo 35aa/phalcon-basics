@@ -1,11 +1,11 @@
 <?php
 
-namespace UserForm;
+namespace Signin;
 
 class SigninForm extends \Phalcon\Forms\Form {
 
 	public function initialize() {
-		$this->setAction('user/checkCredentials');
+		$this->setAction('login/checkCredentials');
 
 		// email
 		$this->add(new \Framework\Forms\Element\Email());

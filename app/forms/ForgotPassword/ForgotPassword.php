@@ -1,10 +1,10 @@
 <?php
 
-namespace UserForm;
+namespace ForgotPassword;
 
 class ForgotPassword extends \Phalcon\Forms\Form {
 	public function initialize() {
-		$this->setAction('user/sendresetpassword');
+		$this->setAction('ForgotPassword/sendresetpassword');
 
 		$element = new \Phalcon\Forms\Element\Text('email', array('size' => '30', 'maxlength'=>70));
 		$element->addValidators(array(

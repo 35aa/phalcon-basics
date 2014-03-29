@@ -1,6 +1,6 @@
 <?php
 
-namespace UserForm;
+namespace Signup;
 
 class SignupForm extends \Phalcon\Forms\Form {
 

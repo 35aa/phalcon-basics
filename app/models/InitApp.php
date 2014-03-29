@@ -58,28 +58,63 @@ class InitApp {
 		//Create an EventsManager
 		$eventsManager = new \Phalcon\Events\Manager();
 		//Attach a listener
-		$eventsManager->attach("dispatch:beforeException", function($event, $dispatcher, $exception) {
-			//Handle 404 exceptions
-			if ($exception instanceof \Phalcon\Mvc\Dispatcher\Exception) {
-				$dispatcher->forward(array('controller' => 'error', 'action' => 'notfound'));
-				return false;
-			}
-			//Handle other exceptions
-			$dispatcher->forward(array('controller' => 'error', 'action' => 'serviceunavailable'));
-			error_log($exception->__toString());
-			return false;
-		});
 
-		$eventsManager->attach("dispatch:beforeDispatchLoop", function($event, $dispatcher) {
-			// Initialize session
-			\Phalcon\DI::getDefault()->get('session')->get('auth');
-			// Initialize cookies and renew it on client side
-			\Phalcon\DI::getDefault()->get('cookies')->has('remember-me');
-		});
+		//Listen for events produced in the dispatcher using the Security plugin
+		$eventsManager->attach('dispatch', new \Framework\Mvc\User\Security(\Phalcon\DI::getDefault()));
 
 		$dispatcher = new \Phalcon\Mvc\Dispatcher();
 		//Bind the EventsManager to the dispatcher
 		$dispatcher->setEventsManager($eventsManager);
 		return $dispatcher;
+	}
+
+	public static function initAcl() {
+		//Create the ACL
+		$acl = new \Phalcon\Acl\Adapter\Memory();
+
+		//The default action is DENY access
+		$acl->setDefaultAction(\Phalcon\Acl::DENY);
+
+		//Register two roles, Users is registered users
+		//and guests are users without a defined identity
+		$guestRole = new \Phalcon\Acl\Role('Guest');
+		$acl->addRole($guestRole);
+		$roles = array('administrator' => new \Phalcon\Acl\Role('Administrator'));
+		foreach ($roles as $role) {
+			$acl->addRole($role, $guestRole);
+		}
+
+		//Private area resources (backend)
+		$privateResources = array(
+			'profile' => array('index', 'username', 'password', 'email', 'deleteemail', 'setprimaryemail'),
+			'signout' => array('index'),
+			'home' => array('index') );
+
+		//Public area resources (frontend)
+		$publicResources = array(
+			'confirmemail' => array('index', 'initverify', 'resetpassword', 'resendresetpassword'),
+			'error' => array('notfound', 'serviceunavailable'),
+			'forgotpassword' => array('index', 'sendresetpassword'),
+			'index' => array('index'),
+			'login' => array('index', 'checkCredentials'),
+			'user' => array('index', 'setnewpassword', 'resetpassword'),
+			'register' => array('index', 'register') );
+
+		foreach (array_merge($privateResources, $publicResources) as $resource => $actions) {
+			$acl->addResource(new Phalcon\Acl\Resource($resource), $actions);
+		}
+
+		//Grant access to public areas to both administrator and guests
+		foreach ($publicResources as $resource => $actions) {
+			$acl->allow('Guest', $resource, '*');
+		}
+
+		//Grant access to private area only to role Users
+		foreach ($privateResources as $resource => $actions) {
+			foreach ($actions as $action) {
+				$acl->allow('Administrator', $resource, $action);
+			}
+		}
+		return $acl;
 	}
 }

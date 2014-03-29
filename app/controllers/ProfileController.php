@@ -3,7 +3,7 @@
 class ProfileController extends \Framework\AbstractController {
 
 	public function initialize() {
-		if (!$this->session->get('auth')->isAuthenticated()) return $this->response->redirect("user/signin");//redirect to index/index page
+		if (!$this->session->get('auth')->isAuthenticated()) return $this->response->redirect("login/index");//redirect to index/index page
 	}
 
 	public function indexAction() {
