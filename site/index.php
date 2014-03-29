@@ -23,6 +23,8 @@ try {
 	//Setting up the view component
 	$di->set('view', call_user_func('InitApp::initView'));
 
+	$di->set('flash', call_user_func('InitApp::initFlash'));
+
 	//Start the session the first time when some component request the session service
 	$di->set('db', call_user_func('InitApp::initDb'));
 

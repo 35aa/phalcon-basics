@@ -82,4 +82,14 @@ class InitApp {
 		$dispatcher->setEventsManager($eventsManager);
 		return $dispatcher;
 	}
+
+	public static function initFlash() {
+		$flash = new \Phalcon\Flash\Direct(array(
+			'error' => 'alert alert-danger',
+			'warning' => 'alert alert-warning',
+			'success' => 'alert alert-success',
+			'notice' => 'alert-info'
+		));
+		return $flash;
+	}
 }

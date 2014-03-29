@@ -1,4 +1,6 @@
 <h1 class="page-header">Profile</h1>
+<?=$this->view->getVar('success') ? $this->flash->success($this->view->getVar('success')) : '';?>
+<?=$this->view->getVar('error') ? $this->flash->error($this->view->getVar('error')) : '';?>
 <p>
 	Username: 
 	<?=$this->view->getVar('escaper')->escapeHtml($this->view->getVar('user')->name)?>

@@ -25,7 +25,10 @@ class ProfileController extends \Framework\AbstractController {
 				$usersTable = new Users();
 				$user_id = $session->getUserCredentials()['id'];
 				$usersTable->getUserByID($user_id)->setNewUsername($login);
-				return $this->response->redirect('profile/index');
+				$this->view->setVar('success', 'User name is updated successfully!');
+			}
+			else {
+				$this->view->setVar('error', 'Please, fix all errors and try again!');
 			}
 		}
 	}
@@ -62,7 +65,10 @@ class ProfileController extends \Framework\AbstractController {
 				$usersEmails->createEmail($email);
 				$usersEmails->sendVerifyEmail($config);
 				// redirect to profile/index
-				if ($usersEmails) return $this->response->redirect('profile/index');
+				$this->view->setVar('success', 'Email is added successfully!');
+			}
+			else {
+				$this->view->setVar('error', 'Please, fix all errors and try again!');
 			}
 		}
 	}
@@ -77,8 +83,12 @@ class ProfileController extends \Framework\AbstractController {
 			$userEmail = $usersEmails->getEmailByIDandUserID($deleteEmail);
 			// Email should exist and it should not be primary. Without primary email user could not login to the system!
 			if ($userEmail && !$userEmail->is_primary) $userEmail->setEmailDeleted();
-			return $this->response->redirect('profile/index');
+			$this->view->setVar('success', 'Email is deleted successfully!');
 		}
+		else {
+			$this->view->setVar('error', 'Oops, please, try again!');
+		}
+		$this->dispatcher->forward(array("controller" => "profile", "action" => "index"));
 	}
 
 	public function setprimaryemailAction() {
@@ -94,8 +104,11 @@ class ProfileController extends \Framework\AbstractController {
 			$user = $usersTable->getUserByID($primaryEmail->user_id);
 			$this->session->set('auth', new \Auth($user));
 			// redirect to profile/index
-			if ($usersEmails) return $this->response->redirect('profile/index');
+			$this->view->setVar('success', 'Email is set as primary');
 		}
+		else {
+			$this->view->setVar('error', 'Oops, please, try again!');
+		}
+		$this->dispatcher->forward(array("controller" => "profile","action" => "index"));
 	}
-
 }

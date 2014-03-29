@@ -1,7 +1,8 @@
 <?php use Phalcon\Tag as Tag; ?>
 <h1 class="page-header">Profile::Add new email</h1>
 <?=Tag::form(array($this->view->form->getAction())) ?>
-
+<?=$this->view->getVar('success') ? $this->flash->success($this->view->getVar('success')) : '';?>
+<?=$this->view->getVar('error') ? $this->flash->error($this->view->getVar('error')) : '';?>
 	<p>
 		<label for="email">New Email<?php if ($form->hasMessagesFor('email')) { ?> (<strong style="color:red;"><?php echo $form->getMessagesFor('email')[0]?></strong>)<?php } ?>:</label><br />
 		<?php echo $form->render('email') ?>
