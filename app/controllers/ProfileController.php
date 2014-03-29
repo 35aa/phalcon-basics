@@ -52,8 +52,7 @@ class ProfileController extends \Framework\AbstractController {
 		if (!$this->view->form) $this->view->setVar('form', new ProfileForm\EmailForm());
 		if ($this->getDI()->getRequest()->isPost()) {
 			$email = (Object) Array('user_id' =>'','is_primary'=>''); // pre-populate required data
-			if ($this->view->form->isValid($this->getDI()->getRequest()->getPost(), $email) 
-					&& !(UsersEmails::isEmailRegistered($email->email))) {
+			if ($this->view->form->isValid($this->getDI()->getRequest()->getPost(), $email)) {
 				$session = $this->session->get('auth');
 				$email->user_id = $session->getUserCredentials()['id'];
 				$email->is_primary = 0; // not primary
