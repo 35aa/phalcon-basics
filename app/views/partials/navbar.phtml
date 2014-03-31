@@ -17,10 +17,10 @@
 			<ul class="nav navbar-nav navbar-right">
 <? if ($this->session->get('auth')->isAuthenticated()) {?>
 				<li><a href="/profile">Profile</a></li>
-				<li><a href="/user/signout">Sign Out</a></li>
+				<li><a href="/signout/index">Sign Out</a></li>
 <? } else { ?>
-				<li><a href="/user/signup">Sign Up</a></li>
-				<li><a href="/user/signin">Sign In</a></li>
+				<li><a href="/register/index">Sign Up</a></li>
+				<li><a href="/login/index">Sign In</a></li>
 <? } ?>
 			</ul>
 

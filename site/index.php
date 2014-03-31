@@ -33,6 +33,8 @@ try {
 
 	$di->set('crypt', call_user_func('InitApp::initCookies'));
 
+	$di->setShared('acl', call_user_func('InitApp::initAcl'));
+
 	//add dispatcher which handle wrong controllers and actions and other errors
 	$di->set('dispatcher', call_user_func('InitApp::initDispatcher'), true);
 

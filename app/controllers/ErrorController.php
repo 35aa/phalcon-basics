@@ -1,6 +1,6 @@
 <?php
 
-class ErrorController extends \Phalcon\Mvc\Controller {
+class ErrorController extends \Framework\AbstractController {
 
 	public function notfoundAction() {}
 
