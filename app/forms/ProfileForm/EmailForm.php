@@ -8,7 +8,9 @@ class EmailForm extends \Phalcon\Forms\Form {
 		$this->setAction('profile/email');
 
 		// email
-		$this->add(new \Framework\Forms\Element\Email());
+		$email = new \Framework\Forms\Element\Email();
+		$email->addValidator(new \Framework\Validation\Validator\EmailExists());
+		$this->add($email);
 
 		// submit
 		$element = new \Framework\Forms\Element\Submit();
