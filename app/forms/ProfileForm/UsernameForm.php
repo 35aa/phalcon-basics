@@ -8,7 +8,9 @@ class UsernameForm extends \Phalcon\Forms\Form {
 		$this->setAction('profile/username');
 
 		// name
-		$this->add(new \Framework\Forms\Element\Name());
+		$username = new \Framework\Forms\Element\Name();
+		$username->addValidator(new \Framework\Validation\Validator\UserExists());
+		$this->add($username);
 
 		// submit
 		$element = new \Framework\Forms\Element\Submit();
