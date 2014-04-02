@@ -2,7 +2,7 @@
 
 namespace ConfirmEmailForm;
 
-class ResetPassword extends \Phalcon\Forms\Form {
+class ResetPassword extends \Framework\Forms\Form {
 	public function initialize() {
 		$this->setAction('confirmemail/resendresetpassword');
 

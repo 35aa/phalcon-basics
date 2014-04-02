@@ -2,13 +2,20 @@
 <h1 class="page-header">Profile::Add new email</h1>
 <?=Tag::form(array($this->view->form->getAction())) ?>
 
-	<p>
-		<label for="email">New Email<?php if ($form->hasMessagesFor('email')) { ?> (<strong style="color:red;"><?php echo $form->getMessagesFor('email')[0]?></strong>)<?php } ?>:</label><br />
+	<div class="form-group">
+		<label for="<?=$form->get('email')->getName()?>"><?=$form->get('email')->getLabel()?>:</label>
 		<?php echo $form->render('email') ?>
-	</p>
+		<span class="help-block">
+<?php
+	if (isset($this->view->getVar('errors')[$form->get('email')->getName()])) {
+		echo $this->view->getVar('escaper')->escapeHtml($this->view->getVar('errors')[$form->get('email')->getName()]);
+	}
+?>
+		</span>
+	</div>
 
-	<p>
+	<div class="form-group">
 		<?php echo $form->render('submit') ?>
-	</p>
+	</div>
 
 <?=Tag::endForm ()?>

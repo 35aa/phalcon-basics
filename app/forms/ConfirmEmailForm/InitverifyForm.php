@@ -2,7 +2,7 @@
 
 namespace ConfirmEmailForm;
 
-class InitverifyForm extends \Phalcon\Forms\Form {
+class InitverifyForm extends \Framework\Forms\Form {
 
 	public function initialize() {
 		$this->setAction('confirmemail/initverify');

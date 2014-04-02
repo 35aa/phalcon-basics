@@ -20,7 +20,7 @@ class ProfileController extends \Framework\AbstractController {
 
 	public function usernameAction() {
 		// In this action implemented change username function
-		if (!$this->view->form) $this->view->setVar('form', new ProfileForm\UsernameForm());
+		if (!$this->view->form) $this->view->setVar('form', new \ProfileForm\UsernameForm());
 		if ($this->getDI()->getRequest()->isPost()) {
 			$login = (Object) Array();
 			if ($this->view->form->isValid($this->getDI()->getRequest()->getPost(), $login)) {
@@ -29,12 +29,15 @@ class ProfileController extends \Framework\AbstractController {
 				$user_id = $session->getUserCredentials()['id'];
 				$usersTable->getUserByID($user_id)->setNewUsername($login);
 				return $this->response->redirect('profile/index');
+			} else {
+				// output error message
+				$this->view->setVar('errors', array_merge(array('name' => 'Can\'t save this username'),$this->view->form->getMessages()));
 			}
 		}
 	}
 
 	public function passwordAction() {
-		if (!$this->view->form) $this->view->setVar('form', new ProfileForm\PasswordForm());
+		if (!$this->view->form) $this->view->setVar('form', new \ProfileForm\PasswordForm());
 		if ($this->getDI()->getRequest()->isPost()) {
 			$password = (Object) Array();
 			if ($this->view->form->isValid($this->getDI()->getRequest()->getPost(), $password)) {
@@ -44,6 +47,9 @@ class ProfileController extends \Framework\AbstractController {
 				$passwordChanged = $usersTable->getUserByID($user_id)->changeUserPassword($password);
 				// redirect to sing up confirmation page
 				if ($passwordChanged) return $this->view->pick('profile/password_confirmation');
+			} else {
+				// output error message
+				$this->view->setVar('errors', array_merge(array('name' => 'Can\'t save this password'),$this->view->form->getMessages()));
 			}
 		}
 		$this->view->form->get('old_password')->clear();
@@ -52,7 +58,7 @@ class ProfileController extends \Framework\AbstractController {
 	}
 
 	public function emailAction() {
-		if (!$this->view->form) $this->view->setVar('form', new ProfileForm\EmailForm());
+		if (!$this->view->form) $this->view->setVar('form', new \ProfileForm\EmailForm());
 		if ($this->getDI()->getRequest()->isPost()) {
 			$email = (Object) Array('user_id' =>'','is_primary'=>''); // pre-populate required data
 			if ($this->view->form->isValid($this->getDI()->getRequest()->getPost(), $email)) {
@@ -65,12 +71,15 @@ class ProfileController extends \Framework\AbstractController {
 				$usersEmails->sendVerifyEmail($config);
 				// redirect to profile/index
 				if ($usersEmails) return $this->response->redirect('profile/index');
+			} else {
+				// output error message
+				$this->view->setVar('errors', array_merge(array('name' => 'Can\'t save this email'),$this->view->form->getMessages()));
 			}
 		}
 	}
 
 	public function deleteemailAction() {
-		if (!$this->view->form) $this->view->setVar('form', new ProfileForm\DeleteEmailForm());
+		if (!$this->view->form) $this->view->setVar('form', new \ProfileForm\DeleteEmailForm());
 		$deleteEmail = (Object) Array();
 		if ($this->view->form->isValid($this->getDI()->getRequest()->getQuery(), $deleteEmail)) {
 			$session = $this->session->get('auth');
@@ -84,7 +93,7 @@ class ProfileController extends \Framework\AbstractController {
 	}
 
 	public function setprimaryemailAction() {
-		if (!$this->view->form) $this->view->setVar('form', new ProfileForm\SetEmailAsPrimaryForm());
+		if (!$this->view->form) $this->view->setVar('form', new \ProfileForm\SetEmailAsPrimaryForm());
 		$primaryEmail = (Object) Array();
 		if ($this->view->form->isValid($this->getDI()->getRequest()->getQuery(), $primaryEmail)) {
 			$session = $this->session->get('auth');

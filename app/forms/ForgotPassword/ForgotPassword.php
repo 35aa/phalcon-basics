@@ -2,7 +2,7 @@
 
 namespace ForgotPassword;
 
-class ForgotPassword extends \Phalcon\Forms\Form {
+class ForgotPassword extends \Framework\Forms\Form {
 	public function initialize() {
 		$this->setAction('ForgotPassword/sendresetpassword');
 

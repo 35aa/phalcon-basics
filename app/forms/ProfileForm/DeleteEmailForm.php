@@ -2,7 +2,7 @@
 
 namespace ProfileForm;
 
-class DeleteEmailForm extends \Phalcon\Forms\Form {
+class DeleteEmailForm extends \Framework\Forms\Form {
 
 	public function initialize() {
 		$this->setAction('profile/deleteemail');
