@@ -10,9 +10,9 @@ class ForgotpasswordController extends \Framework\AbstractController {
 	}
 
 	public function indexAction() {
-		if (!$this->view->form) $this->view->setVar('form', new ForgotPassword\ForgotPassword());
+		if (!$this->view->form) $this->view->setVar('form', new \ForgotPassword\ForgotPassword());
 		if (!$this->view->captcha) {
-			$this->view->setVar('captcha', new Captcha\Captcha($this->getDI()->get('config')->recaptcha));
+			$this->view->setVar('captcha', new \Captcha\Captcha($this->getDI()->get('config')->recaptcha));
 		}
 	}
 
@@ -20,10 +20,10 @@ class ForgotpasswordController extends \Framework\AbstractController {
 		$captcha = null;
 		$form = null;
 		if ($this->getDI()->getRequest()->isPost()) {
-			$form = new ForgotPassword\ForgotPassword();
-			$captcha = new Captcha\Captcha($this->getDI()->get('config')->recaptcha);
+			$form = new \ForgotPassword\ForgotPassword();
+			$captcha = new \Captcha\Captcha($this->getDI()->get('config')->recaptcha);
 
-			$usersTable = new Users();
+			$usersTable = new \Users();
 			$validatedData = (Object) Array();
 			//validate data and try to get user by email
 			if ($form->isValid($this->getDI()->getRequest()->getPost(), $validatedData)
@@ -32,7 +32,10 @@ class ForgotpasswordController extends \Framework\AbstractController {
 
 				//send reset password email
 				$user->getPrimaryEmail()->sendResetPasswordEmail($this->getDI()->get('config'));
-				return $this->view->pick('user/reset_confirmation');
+				return $this->view->pick('forgotpassword/reset_confirmation');
+			} else {
+				// output error message
+				$this->view->setVar('errors', $form->getMessages());
 			}
 		}
 
