@@ -2,13 +2,20 @@
 <h1 class="page-header">Profile::Change username</h1>
 <?=Tag::form(array($this->view->form->getAction())) ?>
 
-	<p>
-		<label for="name">New Username<?php if ($form->hasMessagesFor('name')) { ?> (<strong style="color:red;"><?php echo $form->getMessagesFor('name')[0]?></strong>)<?php } ?>:</label><br />
+	<div class="form-group">
+		<label for="<?=$form->get('name')->getName()?>"><?=$form->get('name')->getLabel()?>:</label>
 		<?php echo $form->render('name') ?>
-	</p>
+		<span class="help-block">
+<?php
+	if (isset($this->view->getVar('errors')[$form->get('name')->getName()])) {
+		echo $this->view->getVar('escaper')->escapeHtml($this->view->getVar('errors')[$form->get('name')->getName()]);
+	}
+?>
+		</span>
+	</div>
 
-	<p>
+	<div class="form-group">
 		<?php echo $form->render('submit') ?>
-	</p>
+	</div>
 
 <?=Tag::endForm ()?>

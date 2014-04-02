@@ -2,7 +2,7 @@
 
 namespace Signin;
 
-class SigninForm extends \Phalcon\Forms\Form {
+class SigninForm extends \Framework\Forms\Form {
 
 	public function initialize() {
 		$this->setAction('login/checkCredentials');

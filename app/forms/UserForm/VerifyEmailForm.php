@@ -2,7 +2,7 @@
 
 namespace UserForm;
 
-class VerifyEmailForm extends \Phalcon\Forms\Form {
+class VerifyEmailForm extends \Framework\Forms\Form {
 
 	public function initialize() {
 		$element = new \Phalcon\Forms\Element\Text('id');

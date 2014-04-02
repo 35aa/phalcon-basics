@@ -2,7 +2,7 @@
 
 namespace ProfileForm;
 
-class UsernameForm extends \Phalcon\Forms\Form {
+class UsernameForm extends \Framework\Forms\Form {
 
 	public function initialize() {
 		$this->setAction('profile/username');

@@ -2,7 +2,7 @@
 
 namespace Signup;
 
-class SignupForm extends \Phalcon\Forms\Form {
+class SignupForm extends \Framework\Forms\Form {
 
 	public function initialize() {
 		$this->setAction('user/register');
