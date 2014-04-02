@@ -6,26 +6,21 @@ class ResetPassword extends \Framework\Forms\Form {
 	public function initialize() {
 		$this->setAction('user/setnewpassword');
 
-		$element = new \Phalcon\Forms\Element\Password('password', array('size' => '15', 'maxlength'=>30));
-		$element->addValidators(array(
-				new \Phalcon\Validation\Validator\PresenceOf(array(
-						'message' => 'The password is required'
-				)),
-				new \Phalcon\Validation\Validator\StringLength(array(
-						'min' => 8,
-						'messageMinimum' => 'Password is too short. Minimum 8 characters required.'
-				)),
-				new \Phalcon\Validation\Validator\Confirmation(array(
-						'message' => 'Password doesn\'t match confirmation',
-						'with' => 'confirmPassword'
-				))
-		));
+		// password
+		$element = new \Framework\Forms\Element\Password();
+		$element->setName('password');
+		$element->setLabel('New Password');
 		$this->add($element);
 
-		$element = new \Phalcon\Forms\Element\Password('confirmPassword', array('size' => '15', 'maxlength'=>30));
+		// confirmPassword
+		$element = new \Framework\Forms\Element\Password();
+		$element->setName('confirmPassword');
+		$element->setLabel('Repeat new password');
 		$this->add($element);
 
-		$element = new \Phalcon\Forms\Element\Submit('submit', array('value'=>'Save'));
+		// submit
+		$element = new \Framework\Forms\Element\Submit();
+		$element->setDefault('Change');
 		$this->add($element);
 	}
 }

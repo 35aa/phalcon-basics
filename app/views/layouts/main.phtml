@@ -7,6 +7,7 @@
 		<title>Blog's title</title>
 		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 <?
+echo \Phalcon\Tag::javascriptInclude("js/config.js");
 if($this->view->getVar('bootstrap_enable')) {
 //Bootstrap
 echo Phalcon\Tag::stylesheetLink('//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css', false);

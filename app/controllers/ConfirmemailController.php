@@ -4,21 +4,21 @@ class ConfirmemailController extends \Framework\AbstractController {
 
 	public function indexAction() {
 		//validate get params -> goto error page
-		$form = new UserForm\VerifyEmailForm();
+		$form = new \UserForm\VerifyEmailForm();
 		$validatedData = (Object) Array();
 		if ($form->isValid($this->getDI()->getRequest()->getQuery(), $validatedData)) {
-			$users = new Users();
+			$users = new \Users();
 			$this->view->setVar('user', $users->verifyUserByIdAndCode($validatedData->id, $validatedData->code));
 		}
 	}
 
 	public function initverifyAction() {
-		$this->view->setVar('form', new ConfirmEmailForm\InitverifyForm());
-		$this->view->setVar('captcha', new Captcha\Captcha($this->getDI()->get('config')->recaptcha));
+		$this->view->setVar('form', new \ConfirmEmailForm\InitverifyForm());
+		$this->view->setVar('captcha', new \Captcha\Captcha($this->getDI()->get('config')->recaptcha));
 
 		if ($this->getDI()->getRequest()->isPost()) {
 			$initVerify = (Object) Array();
-			$usersEmailsTable = new UsersEmails();
+			$usersEmailsTable = new \UsersEmails();
 
 			if ($this->view->form->isValid($this->getDI()->getRequest()->getPost(), $initVerify)
 					&& $this->view->captcha->checkAnswer($this->getDI()->getRequest())
@@ -32,9 +32,9 @@ class ConfirmemailController extends \Framework\AbstractController {
 
 	public function resetpasswordAction() {
 		//validate get params -> goto error page
-		$form = new UserForm\VerifyEmailForm();
+		$form = new \UserForm\VerifyEmailForm();
 		$validatedData = (Object) Array();
-		$users = new Users();
+		$users = new \Users();
 		// validate data and try to ghet user by user id and validation code
 		if ($form->isValid($this->getDI()->getRequest()->getQuery(), $validatedData)
 				&& ($user = $users->findUserForResetPasswordByIdAndCode($validatedData->id, $validatedData->code))) {
@@ -49,8 +49,8 @@ class ConfirmemailController extends \Framework\AbstractController {
 				"action" => "resetpassword" ));
 		}
 		if (!$this->view->getVar('form')) {
-			$this->view->setVar('form', new ConfirmEmailForm\ResetPassword());
-			$this->view->setVar('captcha', new Captcha\Captcha($this->getDI()->get('config')->recaptcha));
+			$this->view->setVar('form', new \ConfirmEmailForm\ResetPassword());
+			$this->view->setVar('captcha', new \Captcha\Captcha($this->getDI()->get('config')->recaptcha));
 		}
 		return $this->view->pick('confirmemail/reset_password');
 	}
@@ -58,12 +58,12 @@ class ConfirmemailController extends \Framework\AbstractController {
 	// use rredirected to this action when he was arrived to resetpassword action,
 	// but for some reason previous action failed to achieve success.
 	public function resendresetpasswordAction() {
-		$this->view->setVar('form', new ConfirmEmailForm\ResetPassword());
-		$this->view->setVar('captcha', new Captcha\Captcha($this->getDI()->get('config')->recaptcha));
+		$this->view->setVar('form', new \ConfirmEmailForm\ResetPassword());
+		$this->view->setVar('captcha', new \Captcha\Captcha($this->getDI()->get('config')->recaptcha));
 
 		if ($this->getDI()->getRequest()->isPost()) {
 			$resetPassword = (Object) Array();
-			$usersTable = new Users();
+			$usersTable = new \Users();
 
 			// validate data and try to find user by email
 			if ($this->view->form->isValid($this->getDI()->getRequest()->getPost(), $resetPassword)
