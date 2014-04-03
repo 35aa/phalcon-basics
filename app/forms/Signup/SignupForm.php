@@ -5,7 +5,7 @@ namespace Signup;
 class SignupForm extends \Framework\Forms\Form {
 
 	public function initialize() {
-		$this->setAction('user/register');
+		$this->setAction('register/register');
 
 		// name
 		$this->add(new \Framework\Forms\Element\Name());

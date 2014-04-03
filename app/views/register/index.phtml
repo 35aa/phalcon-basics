@@ -8,6 +8,8 @@
 
 <?if ($this->view->getVar('sign_up_enable')) {?>
 
+<?=$this->partial('partials/messages')?>
+
 <?php $form = $this->view->form; echo $this->tag->form($form->getAction()) ?>
 
 	<div class="form-group">

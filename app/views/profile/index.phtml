@@ -11,6 +11,7 @@
 
 <p>
 	<label>Emails: </label><br />
+<?=$this->partial('partials/messages')?>
 	<ul>
 <? foreach ($this->view->getVar('user')->getEmails() as $email) { ?>
 		<li>
@@ -18,7 +19,7 @@
 			<?=$email->is_primary ? '<i style=\'color:green\'>primary</i>' : ''?>
 			<?=$email->verified ? '' : '<i style=\'color:red\'>not verified</i>'?>
 			<?=$email->verified && !$email->is_primary ? "<a href='/profile/setprimaryemail/?id=$email->id'>set primary</a>" : ''?>
-			<?=$email->is_primary ? '' : "<a href='/profile/deleteemail/?id=$email->id'>delete</a>"?>
+			<?=!$email->is_primary ? '' : "<a href='/profile/deleteemail/?id=$email->id'>delete</a>"?>
 		</li>
 <? } ?>
 			<li>
