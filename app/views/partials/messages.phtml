@@ -1,0 +1,14 @@
+<div class="messages-container">
+<?foreach ($this->view->getVar('messages')->getErrors() as $message) {?>
+	<div class="alert alert-danger"><?=$this->view->getVar('escaper')->escapeHtml($message->getMessage())?></div>
+<?}?>
+<?foreach ($this->view->getVar('messages')->getWarnings() as $message) {?>
+	<div class="alert alert-warning"><?=$this->view->getVar('escaper')->escapeHtml($message->getMessage())?></div>
+<?}?>
+<?foreach ($this->view->getVar('messages')->getNotifications() as $message) {?>
+	<div class="alert alert-info"><?=$this->view->getVar('escaper')->escapeHtml($message->getMessage())?></div>
+<?}?>
+<?foreach ($this->view->getVar('messages')->getSuccess() as $message) {?>
+	<div class="alert alert-success"><?=$this->view->getVar('escaper')->escapeHtml($message->getMessage())?></div>
+<?}?>
+</div>

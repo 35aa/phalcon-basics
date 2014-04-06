@@ -4,7 +4,7 @@
 </head>
 <body>
 	<h1 class="page-header">Sign In</h1>
-
+<?=$this->partial('partials/messages')?>
 <? $form = $this->view->form; echo $this->tag->form($form->getAction()) ?>
 
 <? if ($this->view->getVar('error')) {?>

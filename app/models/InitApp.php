@@ -6,6 +6,7 @@ class InitApp {
 		$config = \Phalcon\DI::getDefault()->get('config');
 		$view = new \Phalcon\Mvc\View();
 		$view->setTemplateAfter('main');
+		$view->setVar('messages', new \Framework\Messages());
 		$view->setVar('bootstrap_enable', $config->view->bootstrap);
 		$view->setVar('sign_up_enable', $config->application->signUp);
 		// for escaping in views

@@ -47,6 +47,7 @@ class RegisterController extends \Framework\AbstractController {
 			$this->view->setVars(array('captcha' => $captcha, 'form' => $form));
 			$this->view->form->get('password')->clear();
 			$this->view->form->get('confirmPassword')->clear();
+			$this->view->messages->addError('Please, fix errors and try again!');
 		}
 
 		$this->dispatcher->forward(array(

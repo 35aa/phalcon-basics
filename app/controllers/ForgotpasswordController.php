@@ -41,6 +41,7 @@ class ForgotpasswordController extends \Framework\AbstractController {
 
 		if ($form) {
 			$this->view->setVars(array('captcha' => $captcha, 'form' => $form));
+			$this->view->messages->addError('Please, fix errors and try again!');
 		}
 
 		$this->dispatcher->forward(array(

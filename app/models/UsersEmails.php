@@ -108,4 +108,8 @@ class UsersEmails extends \Phalcon\Mvc\Model {
 		return $this->save();
 	}
 
+	public function isEmailActive() {
+		return is_null($this->deleted);
+	}
+
 }

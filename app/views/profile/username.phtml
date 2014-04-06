@@ -1,5 +1,6 @@
 <?php use Phalcon\Tag as Tag; ?>
 <h1 class="page-header">Profile::Change username</h1>
+<?=$this->partial('partials/messages')?>
 <?=Tag::form(array($this->view->form->getAction())) ?>
 
 	<div class="form-group">
@@ -7,8 +8,8 @@
 		<?php echo $form->render('name') ?>
 		<span class="help-block">
 <?php
-	if (isset($this->view->getVar('errors')[$form->get('name')->getName()])) {
-		echo $this->view->getVar('escaper')->escapeHtml($this->view->getVar('errors')[$form->get('name')->getName()]);
+	if ($form->hasMessagesFor($form->get('name')->getName())) {
+		echo $this->view->getVar('escaper')->escapeHtml($form->getMessagesFor($form->get('name')->getName())->offsetGet(0)->getMessage());
 	}
 ?>
 		</span>

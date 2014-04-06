@@ -29,9 +29,9 @@ class ProfileController extends \Framework\AbstractController {
 				$user_id = $session->getUserCredentials()['id'];
 				$usersTable->getUserByID($user_id)->setNewUsername($login);
 				return $this->response->redirect('profile/index');
-			} else {
-				// output error message
-				$this->view->setVar('errors', array_merge(array('name' => 'Can\'t save this username'),$this->view->form->getMessages()));
+			}
+			else {
+				$this->view->messages->addError('Please, fix errors and try again!');
 			}
 		}
 	}
@@ -47,14 +47,14 @@ class ProfileController extends \Framework\AbstractController {
 				$passwordChanged = $usersTable->getUserByID($user_id)->changeUserPassword($password);
 				// redirect to sing up confirmation page
 				if ($passwordChanged) return $this->view->pick('profile/password_confirmation');
-			} else {
-				// output error message
-				$this->view->setVar('errors', array_merge(array('name' => 'Can\'t save this password'),$this->view->form->getMessages()));
+			}
+			else {
+				$this->view->messages->addError('Please, fix errors and try again!');
+				$this->view->form->get('old_password')->clear();
+				$this->view->form->get('new_password')->clear();
+				$this->view->form->get('confirmPassword')->clear();
 			}
 		}
-		$this->view->form->get('old_password')->clear();
-		$this->view->form->get('new_password')->clear();
-		$this->view->form->get('confirmPassword')->clear();
 	}
 
 	public function emailAction() {
@@ -73,7 +73,7 @@ class ProfileController extends \Framework\AbstractController {
 				if ($usersEmails) return $this->response->redirect('profile/index');
 			} else {
 				// output error message
-				$this->view->setVar('errors', array_merge(array('name' => 'Can\'t save this email'),$this->view->form->getMessages()));
+				$this->view->messages->addError('Please, fix errors and try again!');
 			}
 		}
 	}
@@ -81,15 +81,21 @@ class ProfileController extends \Framework\AbstractController {
 	public function deleteemailAction() {
 		if (!$this->view->form) $this->view->setVar('form', new \ProfileForm\DeleteEmailForm());
 		$deleteEmail = (Object) Array();
-		if ($this->view->form->isValid($this->getDI()->getRequest()->getQuery(), $deleteEmail)) {
+		if ($emailDeleted = $this->view->form->isValid($this->getDI()->getRequest()->getQuery(), $deleteEmail)) {
 			$session = $this->session->get('auth');
 			$deleteEmail->user_id = $session->getUserCredentials()['id'];  // pre-populate required data
 			$usersEmails = new UsersEmails();
 			$userEmail = $usersEmails->getEmailByIDandUserID($deleteEmail);
 			// Email should exist and it should not be primary. Without primary email user could not login to the system!
-			if ($userEmail && !$userEmail->is_primary) $userEmail->setEmailDeleted();
-			return $this->response->redirect('profile/index');
+			if ($emailDeleted = $userEmail && !$userEmail->is_primary) $userEmail->setEmailDeleted();
+		} 
+		if (!$emailDeleted) {
+			// output error message
+			$this->view->messages->addError('Oops, selected email couldn\'t be deleted');
 		}
+		return $this->dispatcher->forward(array(
+				"controller" => "profile",
+				"action" => "index" ));
 	}
 
 	public function setprimaryemailAction() {
