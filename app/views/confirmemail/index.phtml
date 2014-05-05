@@ -1,21 +1,10 @@
-<html>
-<head>
-</head>
-<body>
-	<h1 class="page-header">Email verification</h1>
+<h1 class="page-header">Email verification</h1>
 <?if ($this->view->getVar('user')) {?>
-	Thank you <?=$this->view->getVar('user')->name?>!<br /><br />
-	
-	You've successfully confirm your email and you could proceed to <a href="/login/index">login page</a> and start using our system.<br /><br />
-	
-	Have fun!
+<p>Thank you <?=$this->view->getVar('escaper')->escapeHtml($this->view->getVar('user')->name)?></p>
+<p>You've successfully confirm your email and you could proceed to <a href="/login/index">login page</a> and start using our system.</p>
+<p>Have fun!</p>
 <?} else {?>
-	Oops!<br /><br />
-	
-	Something goes wrong!
-	The email you've provided was not verified successfully. Please, go to the <a href="/confirmemail/initverify">verification page</a> and try one more time.<br /><br />
-	
-	Sorry for inconvenience.
+<p>Oops! Something goes wrong!</p>
+<p>The email you've provided was not verified successfully. Please, go to the <a href="/confirmemail/initverify">verification page</a> and try one more time.</p>
+<p>Sorry for inconvenience.</p>
 <?}?>
-</body>
-</html>
