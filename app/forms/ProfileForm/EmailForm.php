@@ -4,8 +4,11 @@ namespace ProfileForm;
 
 class EmailForm extends \Framework\Forms\Form {
 
+	const FORM_ACTION = 'profile/email';
+	const ELEMENT_SUBMIT_VALUE = 'Add';
+
 	public function initialize() {
-		$this->setAction('profile/email');
+		$this->setAction(self::FORM_ACTION);
 
 		// email
 		$email = new \Framework\Forms\Element\Email();
@@ -14,7 +17,7 @@ class EmailForm extends \Framework\Forms\Form {
 
 		// submit
 		$element = new \Framework\Forms\Element\Submit();
-		$element->setDefault('Add');
+		$element->setDefault(self::ELEMENT_SUBMIT_VALUE);
 		$this->add($element);
 	}
 

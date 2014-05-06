@@ -3,19 +3,18 @@
 namespace ConfirmEmailForm;
 
 class ResetPassword extends \Framework\Forms\Form {
+
+	const FORM_ACTION = 'confirmemail/resendresetpassword';
+	const ELEMENT_SUBMIT_VALUE = 'Resend';
+
 	public function initialize() {
-		$this->setAction('confirmemail/resendresetpassword');
+		$this->setAction(self::FORM_ACTION);
 
-		$element = new \Phalcon\Forms\Element\Text('email', array('size' => '30', 'maxlength'=>70));
-		$element->addValidators(array(
-				new \Phalcon\Validation\Validator\PresenceOf(array(
-						'message' => 'The email is required')),
-				new \Phalcon\Validation\Validator\Email(array(
-						'message' => 'The email is not valid' ))
-		));
-		$this->add($element);
+		$this->add(new \Framework\Forms\Element\Email());
 
-		$element = new \Phalcon\Forms\Element\Submit('submit', array('value'=>'Resend'));
+		// submit
+		$element = new \Framework\Forms\Element\Submit();
+		$element->setDefault(self::ELEMENT_SUBMIT_VALUE);
 		$this->add($element);
 	}
 }
