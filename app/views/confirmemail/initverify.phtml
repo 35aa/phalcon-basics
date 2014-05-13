@@ -1,20 +1,34 @@
-<h1 class="page-header">Manual email activation</h1>
 <?php use Phalcon\Tag as Tag; ?>
+
+<h1 class="page-header">Manual email activation</h1>
+
 <?=Tag::form(array($this->view->form->getAction())) ?>
 
-<p>
-	<label for="email">Email<?php if ($form->hasMessagesFor('email')) { ?> (<strong style="color:red;"><?php echo $form->getMessagesFor('email')[0]?></strong>)<?php } ?><?php if ($this->view->getVar('emailRegistered')) { ?> (<strong style="color:red;">This email already registered</strong>)<?php } ?>:</label>
-	<?php echo $form->render('email') ?>
-</p>
+	<div class="form-group">
+		<label for="<?=$this->view->form->get('email')->getName()?>"><?=$this->view->form->get('email')->getLabel()?></label>
+<?=$form->render('email') ?>
+		<span class="help-block">
+<?php
+// TODO: add check if email is already activated
+if ($form->hasMessagesFor($form->get('email')->getName())) {
+	echo $this->view->getVar('escaper')->escapeHtml($form->getMessagesFor($form->get('email')->getName())->offsetGet(0)->getMessage());
+}
+?>
+		</span>
+	</div>
 
-<p>
-	<label>Captcha:</label>
-	<?php if ($this->view->captcha->getError()) ?><span style="color:red; font-weight:bold"><?php echo $this->view->captcha->getError() ?></span>
-	<?php echo $this->view->captcha->getHtml()?>
-</p>
+	<div class="form-group">
+		<label>Captcha</label>
+<?=$this->view->captcha->getHtml()?>
+		<span class="help-block">
+<?php
+if ($this->view->captcha->getError()) echo $this->view->captcha->getError();
+?>
+		</span>
+	</div>
 
-<p>
-	<?=$this->view->form->render('submit')?>
-</p>
+	<div class="form-group">
+<?=$this->view->form->render('submit')?>
+	</div>
 
 <?=Tag::endForm ()?>
