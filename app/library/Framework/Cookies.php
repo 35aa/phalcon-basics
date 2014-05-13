@@ -7,7 +7,6 @@ class Cookies extends \Phalcon\Http\Response\Cookies {
 	const COOKIE_EXPIRATION_TIME = 1296000; // 15 days
 
 	public function __construct() {
-		// parent::__construct();
 		$this->useEncryption(true);
 	}
 
