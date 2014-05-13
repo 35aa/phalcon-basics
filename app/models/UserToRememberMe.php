@@ -23,8 +23,9 @@ class UserToRememberMe extends \Phalcon\Mvc\Model {
 	}
 
 	public function renewCodeByUserID($user_id) {
-		$code = $this->getCodeByUserID($user_id);
-		$code->renewCode();
+		if ($code = $this->getCodeByUserID($user_id)) {
+			$code->renewCode();
+		}
 		return $code;
 	}
 

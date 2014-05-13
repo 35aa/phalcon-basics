@@ -40,9 +40,11 @@ class Security extends \Phalcon\Mvc\User\Plugin {
 	}
 
 	public function beforeDispatchLoop(\Phalcon\Events\Event $event, \Phalcon\Mvc\Dispatcher $dispatcher) {
+		// I do not think we need this more!!!
+		// This is needed by anonymous functions: leaving this for future use!!!
 		// Initialize session
-		\Phalcon\DI::getDefault()->get('session')->get('auth');
+		//\Phalcon\DI::getDefault()->get('session')->get('auth');
 		// Initialize cookies and renew it on client side
-		\Phalcon\DI::getDefault()->get('cookies')->has('remember-me');
+		//\Phalcon\DI::getDefault()->get('cookies')->has('remember-me');
 	}
 }

@@ -32,8 +32,9 @@ class InitApp {
 	}
 
 	public static function initCrypt() {
+		$config = \Phalcon\DI::getDefault()->get('config');
 		$crypt = new \Phalcon\Crypt();
-		$crypt->setKey('+N+~j!Oc%>{#^h@8.K');
+		$crypt->setKey($config->application->cryptKey);
 		return $crypt;
 	}
 
