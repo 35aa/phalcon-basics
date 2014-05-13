@@ -57,7 +57,12 @@ class Auth {
 	}
 
 	public function getUserId() {
-		return $this->user['id'];
+		if ($this->isAuthenticated()) {
+			return $this->user['id'];
+		}
+		else {
+			return null;
+		}
 	}
 }
 
