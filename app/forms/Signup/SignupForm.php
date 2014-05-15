@@ -5,8 +5,10 @@ namespace Signup;
 class SignupForm extends \Framework\Forms\Form {
 
 	const FORM_ACTION = 'register/register';
+	const ELEMENT_PASSWORD_LABEL = 'Password';
 	const ELEMENT_PASSWORD_MESSAGE = 'Password doesn\'t match confirmation';
 	const ELEMENT_PASSWORD_WITH_ID = 'confirmPassword';
+	const ELEMENT_CONFIRM_PASSWORD_LABEL = 'Сonfirm password';
 	const ELEMENT_CONFIRM_PASSWORD_NAME = 'confirmPassword';
 	const ELEMENT_SUBMIT_VALUE = 'Create Account';
 
@@ -21,6 +23,7 @@ class SignupForm extends \Framework\Forms\Form {
 
 		// password
 		$element = new \Framework\Forms\Element\Password();
+		$element->setLabel(self::ELEMENT_PASSWORD_LABEL);
 		$element->addValidators(array(
 				new \Phalcon\Validation\Validator\Confirmation(array(
 						'message' => self::ELEMENT_PASSWORD_MESSAGE,
@@ -31,6 +34,7 @@ class SignupForm extends \Framework\Forms\Form {
 
 		// confirmPassword
 		$element = new \Framework\Forms\Element\Password();
+		$element->setLabel(self::ELEMENT_CONFIRM_PASSWORD_LABEL);
 		$element->setName(self::ELEMENT_CONFIRM_PASSWORD_NAME);
 		$this->add($element);
 

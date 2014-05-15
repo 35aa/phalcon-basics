@@ -1,58 +1,72 @@
-<html>
-<head>
-<?php echo \Phalcon\Tag::javascriptInclude("js/config.js"); ?>
-</head>
-<body>
+<? use Phalcon\Tag as Tag; ?>
 
-	<h1 class="page-header">Sign Up</h1>
+<h1 class="page-header">Sign Up</h1>
 
 <?if ($this->view->getVar('sign_up_enable')) {?>
-
 <?=$this->partial('partials/messages')?>
-
-<?php $form = $this->view->form; echo $this->tag->form($form->getAction()) ?>
+<?=Tag::form(array($this->view->form->getAction())) ?>
 
 	<div class="form-group">
-		<label for="name">Username</label>
-		<?php echo $form->render('name') ?>
-		<p class="help-block">
-<?php if ($form->hasMessagesFor('name')) { ?> <strong style="color:red;"><?php echo $form->getMessagesFor('name')[0]?></strong><?php } ?>
-		</p>
+		<label for="<?=$form->get('name')->getName()?>"><?=$form->get('name')->getLabel()?></label>
+<?=$form->render('name') ?>
+		<span class="help-block">
+<?
+if ($form->hasMessagesFor($form->get('name')->getName())) {
+	echo $this->view->getVar('escaper')->escapeHtml($form->getMessagesFor($form->get('name')->getName())->offsetGet(0)->getMessage());
+}
+?>
+		</span>
 	</div>
 
 	<div class="form-group">
-		<label for="email">Email</label>
-		<?php echo $form->render('email') ?>
-		<p class="help-block">
-<?php if ($form->hasMessagesFor('email')) { ?> <strong style="color:red;"><?php echo $form->getMessagesFor('email')[0]?></strong><?php } ?><?php if ($this->view->getVar('emailRegistered')) { ?> <strong style="color:red;">This email already registered</strong><?php } ?>
-		</p>
+		<label for="<?=$form->get('email')->getName()?>"><?=$form->get('email')->getLabel()?></label>
+<?=$form->render('email') ?>
+		<span class="help-block">
+<?
+if ($form->hasMessagesFor($form->get('email')->getName())) {
+	echo $this->view->getVar('escaper')->escapeHtml($form->getMessagesFor($form->get('email')->getName())->offsetGet(0)->getMessage());
+}
+?>
+		</span>
 	</div>
 
 	<div class="form-group">
-		<label for="password">Password</label>
-		<?php echo $form->render('password') ?>
-		<p class="help-block">
-<?php if ($form->hasMessagesFor('password')) { ?> <strong style="color:red;"><?php echo $form->getMessagesFor('password')[0]?></strong><?php } ?>
-		</p>
+		<label for="<?=$form->get('password')->getName()?>"><?=$form->get('password')->getLabel()?></label>
+<?=$form->render('password') ?>
+		<span class="help-block">
+<?
+if ($form->hasMessagesFor($form->get('password')->getName())) {
+	echo $this->view->getVar('escaper')->escapeHtml($form->getMessagesFor($form->get('password')->getName())->offsetGet(0)->getMessage());
+}
+?>
+		</span>
 	</div>
 
 	<div class="form-group">
-		<label for="repeatPassword">Repeat password</label>
-		<?php echo $form->render('confirmPassword') ?>
-		<p class="help-block">
-<?php if ($form->hasMessagesFor('repeatPassword')) { ?> <strong style="color:red;"><?php echo $form->getMessagesFor('repeatPassword')[0]?></strong><?php } ?>
-		</p>
+		<label for="<?=$form->get('confirmPassword')->getName()?>"><?=$form->get('confirmPassword')->getLabel()?></label>
+<?=$form->render('confirmPassword') ?>
+		<span class="help-block">
+<?php
+if ($form->hasMessagesFor($form->get('confirmPassword')->getName())) {
+	echo $this->view->getVar('escaper')->escapeHtml($form->getMessagesFor($form->get('confirmPassword')->getName())->offsetGet(0)->getMessage());
+}
+?>
+		</span>
 	</div>
 
 	<div class="form-group">
 		<label for="captcha">Captcha</label>
-<? echo $this->view->captcha->getHtml()?>
-<? if ($this->view->captcha->getError()) ?><span style="color:red; font-weight:bold"><?php echo $this->view->captcha->getError() ?></span>
+<?=$this->view->captcha->getHtml()?>
+<?if ($this->view->captcha->getError()) {?>
+		<span class="help-block">
+<?=$this->view->captcha->getError()?>
+		</span>
+<? } ?>
 	</div>
 
 <?=$form->render('submit') ?>
 
-</form>
+<?=Tag::endForm ()?>
 
 <? } else { ?>
 
@@ -60,6 +74,3 @@
 <p>Thanks!</p>
 
 <? } ?>
-
-</body>
-</html>
