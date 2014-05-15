@@ -10,21 +10,6 @@ class UserController extends \Framework\AbstractController {
 	}
 
 	public function indexAction() {}
-	
-
-	public function resetpasswordAction() {
-		if (!$this->session->get('reset-auth')) {
-			$this->dispatcher->forward(array(
-					"controller" => "login",
-					"action" => "index" ));
-		}
-		if (!$this->view->form) $this->view->setVar('form', new UserForm\ResetPassword());
-		if (!$this->view->captcha) {
-			$this->view->setVar('captcha', new Captcha\Captcha($this->getDI()->get('config')->recaptcha));
-		}
-		$this->view->form->get('password')->clear();
-		$this->view->form->get('confirmPassword')->clear();
-	}
 
 	public function setnewpasswordAction() {
 		if (!$this->session->get('reset-auth')) {
