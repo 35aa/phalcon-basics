@@ -73,38 +73,28 @@ class InitApp {
 	 * see for more info ./app/library/Framework/Mvc/User/Security.php
 	 */
 	public static function initAcl() {
-		$userId = \Phalcon\DI::getDefault()->get('session')->get('auth')->getUserId();
-
 		//Create the ACL
 		$acl = new \Phalcon\Acl\Adapter\Memory();
 
 		//The default action is DENY access
 		$acl->setDefaultAction(\Phalcon\Acl::DENY);
 
-		//Register two roles, Users is registered users
-		//and guests are users without a defined identity
-		$role = new \Phalcon\Acl\Role(UsersRoles::ROLE_GUEST);
-		if ($userId) {
-			$usersTable = new \Users();
-			if ($userRole = $usersTable->getUserById($userId)->getUsersRoles()) {
-				$role = new \Phalcon\Acl\Role($userRole->role);
-			}
-		}
+		//get user role
+		$role = new \Phalcon\Acl\Role(\Phalcon\DI::getDefault()->get('session')->get('auth')->getUserRole());
 
 		$acl->addRole($role);
 
+		// all resources available for administrator
 		if ($role->getName() == UsersRoles::ROLE_ADMINISTRATOR) {
 			$acl->allow($role->getName(), '*', '*');
 		}
 		else {
-
-			//Private area resources (backend)
+			//Private area resources
 			$userResources = array(
 				'profile' => array('index', 'username', 'password', 'email', 'deleteemail', 'setprimaryemail'),
-				'signout' => array('index'),
 				'home' => array('index') );
 
-			//Public area resources (frontend)
+			//Public area resources
 			$publicResources = array(
 				'confirmemail' => array('index', 'initverify', 'resetpassword', 'resendresetpassword'),
 				'error' => array('notfound', 'serviceunavailable'),
@@ -112,29 +102,30 @@ class InitApp {
 				'index' => array('index'),
 				'login' => array('index', 'checkCredentials'),
 				'user' => array('index', 'setnewpassword', 'resetpassword'),
+				'signout' => array('index'),
 				'register' => array('index', 'register') );
 
-			foreach (array_merge($userResources, $publicResources) as $resource => $actions) {
+			//select resources for the role for the guest
+			if ($role->getName() == UsersRoles::ROLE_GUEST) {
+				$resources = $publicResources;
+			}
+			//select resources for the role for the user
+			else {
+				$resources = array_merge($userResources, $publicResources);
+			}
+
+			//register resources
+			foreach ($resources as $resource => $actions) {
 				$acl->addResource(new Phalcon\Acl\Resource($resource), $actions);
 			}
 
-			//Grant access to public areas to both administrator and guests
-			foreach ($publicResources as $resource => $actions) {
+			//Grant access to the resources
+			foreach ($resources as $resource => $actions) {
 				foreach ($actions as $action) {
 					$acl->allow($role->getName(), $resource, $action);
 				}
 			}
-
-			if ($role->getName() != UsersRoles::ROLE_GUEST) {
-				//Grant access to private area only to role Users
-				foreach ($userResources as $resource => $actions) {
-					foreach ($actions as $action) {
-						$acl->allow($role->getName(), $resource, $action);
-					}
-				}
-			}
 		}
-
 		return $acl;
 	}
 }
