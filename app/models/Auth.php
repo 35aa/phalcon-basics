@@ -8,6 +8,7 @@ class Auth {
 	protected $user;
 	protected $started;
 	protected $retryCount;
+	protected $role;
 
 	public function __construct($user = null) {
 		$this->user = array();
@@ -57,7 +58,35 @@ class Auth {
 	}
 
 	public function getUserId() {
-		return $this->user['id'];
+		if ($this->isAuthenticated()) {
+			return $this->user['id'];
+		}
+		else {
+			return null;
+		}
+	}
+
+	public function getUserRole() {
+		// if role is not defined - define it
+		if (!$this->role) {
+			//by default guest
+			$this->role = UsersRoles::ROLE_GUEST;
+			//if user authorized - get his own role
+			if ($this->isAuthenticated()) {
+				$usersTable = new \Users();
+				$this->role = $usersTable->getUserById($this->getUserId())->getUsersRoles()->role;
+			}
+		}
+		//return role
+		return $this->role;
+	}
+
+	//magic method called when session is storing in the file as string
+	//should return array of properties' names which should be serialized
+	//WARNING: all properties which does not appear here will not be saved in session
+	//WARNING: do not add property 'role' here. It should be populated per each request.
+	public function __sleep() {
+		return array('user', 'started', 'retryCount');
 	}
 }
 

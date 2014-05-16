@@ -2,7 +2,15 @@
 
 class Users extends \Phalcon\Mvc\Model {
 
+	const FIELD_ID = 'id';
+	const TABLE_USERS_ROLES = 'UsersRoles';
+	const FIELD_RELATED_ROLE_ID = 'role_id';
+
 	protected $_emails = array();
+
+	public function initialize() {
+		$this->belongsTo(self::FIELD_RELATED_ROLE_ID, self::TABLE_USERS_ROLES, self::FIELD_ID);
+	}
 
 	public function create($data = array(), $whiteList = array()) {
 		if (count($data)) $this->assign($data);
