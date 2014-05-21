@@ -17,6 +17,7 @@ class Users extends \Phalcon\Mvc\Model {
 		$this->id = md5(microtime(true));
 		$this->hashPassword($this->password);
 		$this->created = time();
+		$this->role_id = \UsersRoles::ROLE_GUEST_ID;
 		parent::create($data, $whiteList);
 		// create new user email
 		$newUsersEmails = new UsersEmails();
