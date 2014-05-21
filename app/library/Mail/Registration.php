@@ -11,7 +11,7 @@ class Registration extends Mail {
 
 	public function __construct() {
 		parent::__construct();
-		$this->setSubject(self::SUBJECT);
+		$this->setSubject(static::SUBJECT);
 	}
 
 	public function send($email, $from, $server) {
