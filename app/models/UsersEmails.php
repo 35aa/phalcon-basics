@@ -39,7 +39,7 @@ class UsersEmails extends \Phalcon\Mvc\Model {
 		return self::findFirst(array('user_id = :user_id: AND is_primary = 1', 'bind' => array('user_id' => $user_id)));
 	}
 
-	public static function isEmailRegistered($email) {
+	public static function getRegisteredEmail($email) {
 		return self::findFirst(array('email = :email: AND deleted IS NULL', 'bind' => array('email' => $email))) != null;
 	}
 

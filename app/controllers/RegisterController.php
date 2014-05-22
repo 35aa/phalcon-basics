@@ -27,8 +27,7 @@ class RegisterController extends \Framework\AbstractController {
 
 			if ($form->isValid($this->getDI()->getRequest()->getPost(), $newUser)
 					&& $captcha->checkAnswer($this->getDI()->getRequest())
-					// TODO: rename isEmailRegistered to getRegisteredEmail
-					&& !($emailRegistered = UsersEmails::isEmailRegistered($newUser->email))) {
+					&& !($emailRegistered = \UsersEmails::getRegisteredEmail($newUser->email))) {
 				// create new user
 				$newUser->create();
 				// send verification data to primary email

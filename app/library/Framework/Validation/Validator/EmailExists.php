@@ -8,7 +8,7 @@ class EmailExists extends \Phalcon\Validation\Validator {
 
 	public function validate ($validator, $attribute) {
 		$emailTable = new \UsersEmails();
-		if ($emailTable->isEmailRegistered($validator->getValue($attribute))) {
+		if ($emailTable->getRegisteredEmail($validator->getValue($attribute))) {
 			$validator->appendMessage(new \Phalcon\Validation\Message(self::VALIDATION_MESSAGE, $attribute, 'Email'));
 			return false;
 		}
