@@ -23,10 +23,16 @@ if ($form->hasMessagesFor($form->get('name')->getName())) {
 <?=$form->render('email') ?>
 		<span class="help-block">
 <?
+// collect input validation messages from form
 if ($form->hasMessagesFor($form->get('email')->getName())) {
 	echo $this->view->getVar('escaper')->escapeHtml($form->getMessagesFor($form->get('email')->getName())->offsetGet(0)->getMessage());
 }
+
+// notify user whether email is already registered
+if ($this->view->getVar('emailRegistered')) { 
 ?>
+			<span>This email is already used</span>
+<? } ?>
 		</span>
 	</div>
 
