@@ -56,7 +56,7 @@ class LoginController extends \Framework\AbstractController {
 			$this->view->messages->addError('Oops! The credentials you\'ve provided are wrong!!!');
 		}
 
-		$this->dispatcher->forward(array(
+		return $this->dispatcher->forward(array(
 				"controller" => "login",
 				"action" => "index" ));
 
