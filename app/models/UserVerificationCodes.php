@@ -30,7 +30,7 @@ class UserVerificationCodes extends \Phalcon\Mvc\Model {
 	}
 
 	public function verifyCode($verification_code) {
-		if ($this->created - time() > self::VERIFICATION_CODE_LIFESPAN) return false;
+		if (time() - $this->created > self::VERIFICATION_CODE_LIFESPAN) return false;
 		$security = new Phalcon\Security();
 		return $security->checkHash($this->verification_code.$this->salt, $verification_code);
 	}

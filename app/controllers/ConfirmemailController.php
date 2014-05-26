@@ -35,7 +35,8 @@ class ConfirmemailController extends \Framework\AbstractController {
 		$form = new \UserForm\VerifyEmailForm();
 		$validatedData = (Object) Array();
 		$users = new \Users();
-		// validate data and try to ghet user by user id and validation code
+
+		// validate data and try to get user by user id and validation code
 		if ($form->isValid($this->getDI()->getRequest()->getQuery(), $validatedData)
 				&& ($user = $users->findUserForResetPasswordByIdAndCode($validatedData->id, $validatedData->code))) {
 			// Create new auth instance in session.
@@ -47,12 +48,11 @@ class ConfirmemailController extends \Framework\AbstractController {
 			return $this->dispatcher->forward(array(
 				"controller" => "user",
 				"action" => "resetpassword" ));
+		} else {
+			// output view with error message in case if link is old
+			// or if any other error occured while reset password
+			return $this->view->pick('confirmemail/reset_password_error');
 		}
-		if (!$this->view->getVar('form')) {
-			$this->view->setVar('form', new \ConfirmEmailForm\ResetPassword());
-			$this->view->setVar('captcha', new \Captcha\Captcha($this->getDI()->get('config')->recaptcha));
-		}
-		return $this->view->pick('confirmemail/reset_password');
 	}
 
 	// use rredirected to this action when he was arrived to resetpassword action,
