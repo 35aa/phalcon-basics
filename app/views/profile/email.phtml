@@ -1,13 +1,14 @@
-<?php use Phalcon\Tag as Tag; ?>
+<? use Phalcon\Tag as Tag; ?>
 <h1 class="page-header">Profile::Add new email</h1>
 <?=$this->partial('partials/messages')?>
 <?=Tag::form(array($this->view->form->getAction())) ?>
 
 	<div class="form-group">
 		<label for="<?=$form->get('email')->getName()?>"><?=$form->get('email')->getLabel()?>:</label>
-		<?php echo $form->render('email') ?>
+<?=$form->render('id') ?>
+<?=$form->render('email') ?>
 		<span class="help-block">
-<?php
+<?
 	if ($form->hasMessagesFor($form->get('email')->getName())) {
 		echo $this->view->getVar('escaper')->escapeHtml($form->getMessagesFor($form->get('email')->getName())->offsetGet(0)->getMessage());
 	}
@@ -16,7 +17,7 @@
 	</div>
 
 	<div class="form-group">
-		<?php echo $form->render('submit') ?>
+<?=$form->render('submit') ?>
 	</div>
 
 <?=Tag::endForm ()?>

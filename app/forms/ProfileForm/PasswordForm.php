@@ -16,7 +16,11 @@ class PasswordForm extends \Framework\Forms\Form {
 	const ELEMENT_SUBMIT_VALUE = 'Change';
 
 	public function initialize() {
-		$this->setAction(self::FORM_ACTION);
+		$this->setAction(self::FORM_ACTION.'/'.$this->getValue('id'));
+
+		// hidden user_id
+		$element = new \Framework\Forms\Element\HiddenUserID();
+		$this->add($element);
 
 		// old password
 		$element = new \Framework\Forms\Element\Password();

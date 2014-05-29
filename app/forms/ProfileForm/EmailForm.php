@@ -8,7 +8,11 @@ class EmailForm extends \Framework\Forms\Form {
 	const ELEMENT_SUBMIT_VALUE = 'Add';
 
 	public function initialize() {
-		$this->setAction(self::FORM_ACTION);
+		$this->setAction(self::FORM_ACTION.'/'.$this->getValue('id'));
+
+		// hidden user_id
+		$element = new \Framework\Forms\Element\HiddenUserID();
+		$this->add($element);
 
 		// email
 		$email = new \Framework\Forms\Element\Email();
