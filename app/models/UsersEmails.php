@@ -67,7 +67,8 @@ class UsersEmails extends \Phalcon\Mvc\Model {
 	}
 
 	public function getVerifiedPrimaryEmailsByEmail($email) {
-		return self::find(array('email = :email: AND verified IS NOT NULL AND is_primary = 1', 'bind' => array('email' => $email)));
+		// get primary email which is verified, primary and not deleted
+		return self::find(array('email = :email: AND verified IS NOT NULL AND is_primary = 1 AND deleted IS NULL', 'bind' => array('email' => $email)));
 	}
 
 	public function setEmailVerified() {

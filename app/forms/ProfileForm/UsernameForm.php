@@ -5,10 +5,15 @@ namespace ProfileForm;
 class UsernameForm extends \Framework\Forms\Form {
 
 	const FORM_ACTION = 'profile/username';
-	const ELEMENT_SUBMIT_VALUE = 'Change';
+	const ELEMENT_SUBMIT_VALUE = 'Update';
 
 	public function initialize() {
-		$this->setAction(self::FORM_ACTION);
+		// e.g. profile/username/6540a8e347ed821ddf602b3bf6388359
+		$this->setAction(self::FORM_ACTION.'/'.$this->getValue('id'));
+
+		// hidden user_id
+		$element = new \Framework\Forms\Element\HiddenUserID();
+		$this->add($element);
 
 		// name
 		$username = new \Framework\Forms\Element\Name();

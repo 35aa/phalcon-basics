@@ -5,7 +5,7 @@
 	<div class="panel-heading"><strong>Name</strong></div>
 	<!-- List group -->
 	<ul class="list-group">
-		<li class="list-group-item"><?=$this->view->getVar('escaper')->escapeHtml($this->view->getVar('user')->name)?>&nbsp;<a href='/profile/username'>Edit</a></li>
+		<li class="list-group-item"><?=$this->view->getVar('escaper')->escapeHtml($this->view->getVar('user')->name)?>&nbsp;<a href='/profile/username/<?=$this->view->getVar('user')->id?>'>Edit</a></li>
 	</ul>
 </div>
 
@@ -14,7 +14,7 @@
 	<div class="panel-heading"><strong>Password</strong></div>
 	<!-- List group -->
 	<ul class="list-group">
-		<li class="list-group-item"><a href='/profile/password'>Edit</a></li>
+		<li class="list-group-item"><a href='/profile/password/<?=$this->view->getVar('user')->id?>'>Edit</a></li>
 	</ul>
 </div>
 
@@ -39,21 +39,21 @@ foreach ($this->view->getVar('user')->getEmails() as $email) {
 // Set Primary button
 if ($email->verified && !$email->is_primary) {
 ?>
-<a href=/profile/setprimaryemail/?id=<?=$this->view->getVar('escaper')->escapeHtml($email->id)?> type="button" class="btn btn-default btn-xs">Set Primary</a>
+<a href=/profile/setprimaryemail/<?=$email->user_id?>/?id=<?=$this->view->getVar('escaper')->escapeHtml($email->id)?> type="button" class="btn btn-default btn-xs">Set Primary</a>
 <? }  // End Set Primary button?>
 
 <?
 // Delete button
 if (!$email->is_primary) {
 ?>
-<a href=/profile/deleteemail/?id=<?=$this->view->getVar('escaper')->escapeHtml($email->id)?> type="button" class="btn btn-danger btn-xs">Delete</a>
+<a href=/profile/deleteemail/<?=$email->user_id?>/?id=<?=$this->view->getVar('escaper')->escapeHtml($email->id)?> type="button" class="btn btn-danger btn-xs">Delete</a>
 <? }  // End Delete button?>
 
 			</div>
 		</li>
 <? } // end foreach ?>
 		<li class="list-group-item">
-			<a href='/profile/email'>Add new email</a>
+			<a href='/profile/email/<?=$this->view->getVar('user')->id?>'>Add new email</a>
 		</li>
 	</ul>
 </div>

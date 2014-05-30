@@ -13,10 +13,9 @@
 			<ul class="nav navbar-nav">
 				<li class="active"><a href="/home">Home</a></li>
 			</ul>
-
 			<ul class="nav navbar-nav navbar-right">
 <? if ($this->session->get('auth')->isAuthenticated()) {?>
-				<li><a href="/profile">Profile</a></li>
+				<li><a href="/profile/index/<?=$this->session->get('auth')->getUserId()?>">Profile</a></li>
 				<li><a href="/signout/index">Sign Out</a></li>
 <? } else { ?>
 				<li><a href="/register/index">Sign Up</a></li>
