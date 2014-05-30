@@ -11,19 +11,18 @@ class ProfileController extends \Framework\AbstractController {
 
 	public function indexAction($user_id = null) {
 		$session = $this->session->get('auth');
-		if (!$user_id) $user_id = $session->getUserCredentials()['id'];
-		$usersTable = new Users();
-		// Get user
-		$user = $usersTable->getUserByID($user_id);
-		$this->view->setVar('user', $user);
+		if ($user = $this->_getUserByID($user_id)) {
+			return $this->view->setVar('user', $user);
+		}
+		
 	}
 
 	public function usernameAction($user_id = null) {
 		$session = $this->session->get('auth');
-		$usersTable = new Users();
-		if (!$user_id) $user_id = $session->getUserCredentials()['id'];
+		// validate whether user_id is md5 value and get user
+		if (!$user = $this->_getUserByID($user_id)) return false;
 		// In this action implemented change username function
-		if (!$this->view->form) $this->view->setVar('form', new \ProfileForm\UsernameForm($user = $usersTable->getUserByID($user_id)));
+		if (!$this->view->form) $this->view->setVar('form', new \ProfileForm\UsernameForm($user));
 		if ($this->getDI()->getRequest()->isPost()) {
 			$login = (Object) Array();
 			if ($this->view->form->isValid($this->getDI()->getRequest()->getPost(), $login)) {
@@ -38,9 +37,9 @@ class ProfileController extends \Framework\AbstractController {
 
 	public function passwordAction($user_id = null) {
 		$session = $this->session->get('auth');
-		$usersTable = new Users();
-		if (!$user_id) $user_id = $session->getUserCredentials()['id'];
-		if (!$this->view->form) $this->view->setVar('form', new \ProfileForm\PasswordForm($user = $usersTable->getUserByID($user_id)));
+		// validate whether user_id is md5 value and get user
+		if (!$user = $this->_getUserByID($user_id)) return false;
+		if (!$this->view->form) $this->view->setVar('form', new \ProfileForm\PasswordForm($user));
 		if ($this->getDI()->getRequest()->isPost()) {
 			$password = (Object) Array();
 			if ($this->view->form->isValid($this->getDI()->getRequest()->getPost(), $password)) {
@@ -59,9 +58,9 @@ class ProfileController extends \Framework\AbstractController {
 
 	public function emailAction($user_id = null) {
 		$session = $this->session->get('auth');
-		$usersTable = new Users();
-		if (!$user_id) $user_id = $session->getUserCredentials()['id'];
-		if (!$this->view->form) $this->view->setVar('form', new \ProfileForm\EmailForm($user = $usersTable->getUserByID($user_id)));
+		// validate whether user_id is md5 value and get user
+		if (!$user = $this->_getUserByID($user_id)) return false;
+		if (!$this->view->form) $this->view->setVar('form', new \ProfileForm\EmailForm($user));
 		if ($this->getDI()->getRequest()->isPost()) {
 			// pre-populate required data
 			$email = (Object) Array(
@@ -84,8 +83,8 @@ class ProfileController extends \Framework\AbstractController {
 
 	public function deleteemailAction($user_id = null) {
 		$session = $this->session->get('auth');
-		$usersTable = new Users();
-		if (!$user_id) $user_id = $session->getUserCredentials()['id'];
+		// validate whether user_id is md5 value and get user
+		if (!$user = $this->_getUserByID($user_id)) return false;
 		if (!$this->view->form) $this->view->setVar('form', new \ProfileForm\DeleteEmailForm());
 		// pre-populate required data
 		$deleteEmail = (Object) Array('user_id' => $user_id);
@@ -106,8 +105,8 @@ class ProfileController extends \Framework\AbstractController {
 
 	public function setprimaryemailAction($user_id = null) {
 		$session = $this->session->get('auth');
-		$usersTable = new Users();
-		if (!$user_id) $user_id = $session->getUserCredentials()['id'];
+		// validate whether user_id is md5 value and get user
+		if (!$user = $this->_getUserByID($user_id)) return false;
 		if (!$this->view->form) $this->view->setVar('form', new \ProfileForm\SetEmailAsPrimaryForm());
 		// pre-populate required data
 		$primaryEmail = (Object) Array('user_id' => $user_id);
@@ -115,12 +114,24 @@ class ProfileController extends \Framework\AbstractController {
 			$usersEmails = new UsersEmails();
 			$usersEmails->setNewPrimaryEmail($primaryEmail);
 			// update session object
-			$usersTable = new Users();
-			$user = $usersTable->getUserByID($primaryEmail->user_id);
-			$this->session->set('auth', new \Auth($user));
+			if ($primaryEmail->user_id == $session->getUserId()) {
+				$this->session->set('auth', new \Auth($user));
+			}
 			// redirect to profile/index
 			if ($usersEmails) return $this->dispatcher->forward(array('controller' => 'profile','action' => 'index' ));
 		}
+	}
+
+	protected function _getUserByID($user_id) {
+		$usersTable = new \Users();
+		if (\Framework\Validation\Validator\Md5::isValid($user_id) 
+			&& $user = $usersTable->getUserByID($user_id)) {
+			return $user;
+		}
+		$this->dispatcher->forward(
+			array('controller' => 'index','action' => 'index' )
+		);
+		return null;
 	}
 
 }
