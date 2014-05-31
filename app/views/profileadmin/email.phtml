@@ -1,0 +1,23 @@
+<? use Phalcon\Tag as Tag; ?>
+<h1 class="page-header">Profile::Add new email</h1>
+<?=$this->partial('partials/messages')?>
+<?=Tag::form(array($this->view->form->getAction())) ?>
+
+	<div class="form-group">
+		<label for="<?=$form->get('email')->getName()?>"><?=$form->get('email')->getLabel()?>:</label>
+<?=$form->render('id') ?>
+<?=$form->render('email') ?>
+		<span class="help-block">
+<?
+	if ($form->hasMessagesFor($form->get('email')->getName())) {
+		echo $this->view->getVar('escaper')->escapeHtml($form->getMessagesFor($form->get('email')->getName())->offsetGet(0)->getMessage());
+	}
+?>
+		</span>
+	</div>
+
+	<div class="form-group">
+<?=$form->render('submit') ?>
+	</div>
+
+<?=Tag::endForm ()?>

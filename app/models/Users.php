@@ -100,12 +100,17 @@ class Users extends \Phalcon\Mvc\Model {
 		$this->save();
 	}
 
+	public function setUserDeactive() {
+		$this->active = 0;
+		$this->save();
+	}
+
 	public function getUserByPrimaryEmailAndPass($email, $password) {
 		$emailsTable = new UsersEmails();
 		$emails = $emailsTable->getVerifiedPrimaryEmailsByEmail($email);
 		foreach ($emails as $primaryEmail) {
 			$user = self::findFirst(array('id = :user_id: AND active = 1', 'bind' => array('user_id' => $primaryEmail->user_id)));
-			if ($user->checkPassword($password)) return $user;
+			if ($user && $user->checkPassword($password)) return $user;
 		}
 		return null;
 	}
@@ -137,6 +142,10 @@ class Users extends \Phalcon\Mvc\Model {
 			$this->save();
 			return true;
 		}
+	}
+
+	public function getAllUsers() {
+		return self::find();
 	}
 
 }

@@ -1,0 +1,26 @@
+<h1 class="page-header">Users</h1>
+
+<div class="list-group">
+<? foreach ($this->view->getVar('users') as $user) {?>
+	<a href="/profileadmin/index/<?=$user->id?>" class="list-group-item">
+		<img class="pull-left" style="margin-right: 15px;" height="64" src="https://avatars0.githubusercontent.com/u/5111142?s=140" width="64">
+		<p class="list-group-item-heading">
+			<strong><?=$user->name?></strong>
+<?
+if (!$user->active) {
+?>
+			&nbsp;<span class="label alert-warning">Not Active</span>
+<? } ?>
+		</p>
+		<span class="list-group-item-text">
+			<?=$user->getPrimaryEmail()->email?>
+<?
+if (!$user->getPrimaryEmail()->verified) {
+?>
+			&nbsp;<span class="label alert-warning">Not Verified</span>
+<? } ?>
+		</span>
+		<p class="list-group-item-text"><?=$user->getUsersRoles()->role?></p>
+	</a>
+<? } ?>
+</div>
