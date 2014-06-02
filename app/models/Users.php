@@ -121,6 +121,17 @@ class Users extends \Phalcon\Mvc\Model {
 		return $user;
 	}
 
+	public function getUserStatusByPrimaryEmail($email) {
+		$emailsTable = new UsersEmails();
+		$emails = $emailsTable->getVerifiedPrimaryEmailsByEmail($email);
+		$user = null;
+		foreach ($emails as $primaryEmail) {
+			$user = self::findFirst(array('id = :user_id:', 'bind' => array('user_id' => $primaryEmail->user_id)));
+			break;
+		}
+		return $user;
+	}
+
 	public function isUserNameStored($name) {
 		return self::findFirst(array('name = :name: AND active = 1', 'bind' => array('name' => $name)));
 	}

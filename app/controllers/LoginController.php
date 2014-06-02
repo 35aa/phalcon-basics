@@ -53,7 +53,11 @@ class LoginController extends \Framework\AbstractController {
 			$this->session->get('auth')->incrementRetryCount();
 			$this->view->setVars(array('captcha' => $captcha, 'form' => $form, 'error' => true));
 			$this->view->form->get('password')->clear();
-			$this->view->messages->addError('Oops! The credentials you\'ve provided are wrong!!!');
+			if (!$usersTable->getUserStatusByPrimaryEmail($validatedData->email)->active) {
+				$this->view->messages->addError('Seems to be that this account was deactivated');
+			} else {
+				$this->view->messages->addError('Oops! The credentials you\'ve provided are wrong!!!');
+			}
 		}
 
 		return $this->dispatcher->forward(array(
