@@ -119,6 +119,13 @@ class ProfileController extends \Framework\AbstractController {
 		}
 	}
 
+	public function deactivateAction() {
+		if ($user = $this->_getUserByID()) {
+			$user->setUserDeleted();
+			return $this->dispatcher->forward(array('controller' => $this->dispatcher->getControllerName(),'action' => 'index' ));
+		}
+	}
+
 	protected function _getUserByID() {
 		$user_id = $this->_getUserID();
 		$usersTable = new \Users();

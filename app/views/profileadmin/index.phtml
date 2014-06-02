@@ -59,25 +59,25 @@ if (!$email->is_primary) {
 </div>
 
 <div class="panel panel-default">
+	<!-- Default panel contents -->
+	<div class="panel-heading"><strong>Role</strong></div>
+	<!-- List group -->
+	<div class="panel-body">
+<?=$this->view->getVar('user')->getUsersRoles()->role?>
+	</div>
+</div>
+
+
+<div class="panel panel-default">
 	<div class="panel-heading"><strong>Status</strong></div>
 	<div class="panel-body">
 <?
 if ($user->active) {
 ?>
-		<span class="label alert-success">Active</span>
+		<p>Once you delete an account, there is no going back. It will be deleted forever. Please be certain.</p>
+		<p><a href="/profileadmin/deactivate/<?=$this->view->getVar('user')->id?>" type="button" class="btn btn-danger">Delete this account</a></p>
 <? } else { ?>
-		<span class="label alert-danger">Deactivated</span>
+		<a href="/profileadmin/activate/<?=$this->view->getVar('user')->id?>" type="button" class="btn btn-success">Restore</a>
 <? } ?>
-		<div class="pull-right">
-<?
-if ($user->active) {
-?>
-
-		<a href="<?=$this->session->get('auth')->getUserId() == $this->view->getVar('user')->id ? '#' : '/profileadmin/deactivate/'.$this->view->getVar('user')->id?>" <?=$this->session->get('auth')->getUserId() == $this->view->getVar('user')->id ? 'disabled="disabled"' : ''?> type="button" class="btn btn-danger btn-xs">Deactivate</a>
-<? } else { ?>
-
-		<a href="<?=$this->session->get('auth')->getUserId() == $this->view->getVar('user')->id ? '#' : '/profileadmin/activate/'.$this->view->getVar('user')->id?>" <?=$this->session->get('auth')->getUserId() == $this->view->getVar('user')->id ? 'disabled="disabled"' : ''?> type="button" class="btn btn-success btn-xs">Activate</a>
-<? } ?>
-		</div>
 	</div>
 </div>
