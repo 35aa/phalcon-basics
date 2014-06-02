@@ -11,19 +11,8 @@ class ProfileadminController extends ProfileController {
 	}
 
 	public function activateAction() {
-		if ($user = $this->_getUserByID()) {
-			$session = $this->session->get('auth');
-			if ($session->getUserId() != $user->id) $user->setUserActive();
-			return $this->dispatcher->forward(array('controller' => $this->dispatcher->getControllerName(),'action' => 'index' ));
-		}
-	}
-
-	public function deactivateAction() {
-		if ($user = $this->_getUserByID()) {
-			$session = $this->session->get('auth');
-			if ($session->getUserId() != $user->id) $user->setUserDeactive();
-			return $this->dispatcher->forward(array('controller' => $this->dispatcher->getControllerName(),'action' => 'index' ));
-		}
+		if ($user = $this->_getUserByID()) $user->setUserActive();
+		return $this->dispatcher->forward(array('controller' => $this->dispatcher->getControllerName(),'action' => 'index' ));
 	}
 
 }

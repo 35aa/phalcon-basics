@@ -54,6 +54,10 @@ class UsersEmails extends \Phalcon\Mvc\Model {
 		return $this->verificationCode;
 	}
 
+	public function getDeletedEmailsForUser($user_id) {
+		return self::find(array('user_id = :user_id: AND deleted IS NOT NULL', 'bind' => array('user_id' => $user_id)));
+	}
+
 	public function getEmailsForUser($user_id) {
 		return self::find(array('user_id = :user_id: AND deleted IS NULL', 'bind' => array('user_id' => $user_id)));
 	}
@@ -101,6 +105,11 @@ class UsersEmails extends \Phalcon\Mvc\Model {
 
 	public function resetPrimaryEmail() {
 		$this->is_primary = 0;
+		return $this->save();
+	}
+
+	public function setEmailRestored() {
+		$this->deleted = null;
 		return $this->save();
 	}
 

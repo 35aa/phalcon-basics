@@ -13,11 +13,17 @@ if (!$user->active) {
 <? } ?>
 		</p>
 		<span class="list-group-item-text">
-			<?=$user->getPrimaryEmail()->email?>
+<?
+if ($user->getPrimaryEmail()) {
+?>
+<?=$user->getPrimaryEmail()->email?>
 <?
 if (!$user->getPrimaryEmail()->verified) {
 ?>
 			&nbsp;<span class="label alert-warning">Not Verified</span>
+<? } ?>
+<? } else { ?>
+			<span>This account was deleted</span>
 <? } ?>
 		</span>
 		<p class="list-group-item-text"><?=$user->getUsersRoles()->role?></p>

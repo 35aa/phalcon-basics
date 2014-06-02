@@ -66,3 +66,18 @@ if (!$email->is_primary) {
 <?=$this->view->getVar('escaper')->escapeHtml($this->session->get('auth')->getUserRole())?>
 	</div>
 </div>
+
+<div class="panel panel-default">
+	<div class="panel-heading"><strong>Status</strong></div>
+	<div class="panel-body">
+<?
+if ($user->active) {
+?>
+		<p>Once you delete an account, there is no going back. It will be deleted forever. Please be certain.</p>
+		<p><a href="/profile/deactivate" type="button" class="btn btn-danger">Delete this account</a></p>
+<? } else { ?>
+		<p>This account was deleted.</p>
+<? } ?>
+	</div>
+</div>
+
