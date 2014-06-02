@@ -1,0 +1,83 @@
+<h1 class="page-header">Profile</h1>
+
+<div class="panel panel-default">
+	<!-- Default panel contents -->
+	<div class="panel-heading"><strong>Name</strong></div>
+	<!-- List group -->
+	<ul class="list-group">
+		<li class="list-group-item"><?=$this->view->getVar('escaper')->escapeHtml($this->view->getVar('user')->name)?>&nbsp;<a href='/profileadmin/username/<?=$this->view->getVar('user')->id?>'>Edit</a></li>
+	</ul>
+</div>
+
+<div class="panel panel-default">
+	<!-- Default panel contents -->
+	<div class="panel-heading"><strong>Password</strong></div>
+	<!-- List group -->
+	<ul class="list-group">
+		<li class="list-group-item"><a href='/profileadmin/password/<?=$this->view->getVar('user')->id?>'>Edit</a></li>
+	</ul>
+</div>
+
+<div class="panel panel-default">
+	<div class="panel-heading"><strong>Emails</strong></div>
+
+<?=$this->partial('partials/messages')?>
+
+	<ul class="list-group">
+<?
+foreach ($this->view->getVar('user')->getEmails() as $email) {
+?>
+		<li class="list-group-item">
+			<!-- Email to display -->
+			<span><?=$this->view->getVar('escaper')->escapeHtml($email->email)?></span>
+			<!-- Bagdes -->
+			<span class="label alert-success"><?=$email->is_primary ? 'Primary' : ''?></span>
+			<span class="label alert-danger"><?=$email->verified ? '' : 'Not Verified'?></span>
+			<!-- Control buttons -->
+			<div class="pull-right">
+<?
+// Set Primary button
+if ($email->verified && !$email->is_primary) {
+?>
+<a href=/profileadmin/setprimaryemail/<?=$email->user_id?>/?id=<?=$this->view->getVar('escaper')->escapeHtml($email->id)?> type="button" class="btn btn-default btn-xs">Set Primary</a>
+<? }  // End Set Primary button?>
+
+<?
+// Delete button
+if (!$email->is_primary) {
+?>
+<a href=/profileadmin/deleteemail/<?=$email->user_id?>/?id=<?=$this->view->getVar('escaper')->escapeHtml($email->id)?> type="button" class="btn btn-danger btn-xs">Delete</a>
+<? }  // End Delete button?>
+
+			</div>
+		</li>
+<? } // end foreach ?>
+		<li class="list-group-item">
+			<a href='/profileadmin/email/<?=$this->view->getVar('user')->id?>'>Add new email</a>
+		</li>
+	</ul>
+</div>
+
+<div class="panel panel-default">
+	<div class="panel-heading"><strong>Status</strong></div>
+	<div class="panel-body">
+<?
+if ($user->active) {
+?>
+		<span class="label alert-success">Active</span>
+<? } else { ?>
+		<span class="label alert-danger">Deactivated</span>
+<? } ?>
+		<div class="pull-right">
+<?
+if ($user->active) {
+?>
+
+		<a href="<?=$this->session->get('auth')->getUserId() == $this->view->getVar('user')->id ? '#' : '/profileadmin/deactivate/'.$this->view->getVar('user')->id?>" <?=$this->session->get('auth')->getUserId() == $this->view->getVar('user')->id ? 'disabled="disabled"' : ''?> type="button" class="btn btn-danger btn-xs">Deactivate</a>
+<? } else { ?>
+
+		<a href="<?=$this->session->get('auth')->getUserId() == $this->view->getVar('user')->id ? '#' : '/profileadmin/activate/'.$this->view->getVar('user')->id?>" <?=$this->session->get('auth')->getUserId() == $this->view->getVar('user')->id ? 'disabled="disabled"' : ''?> type="button" class="btn btn-success btn-xs">Activate</a>
+<? } ?>
+		</div>
+	</div>
+</div>

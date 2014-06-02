@@ -2,9 +2,9 @@
 
 namespace ProfileForm;
 
-class PasswordForm extends \Framework\Forms\Form {
+class PasswordForm extends AbstractForm {
 
-	const FORM_ACTION = 'profile/password';
+	const ACTION = 'password';
 	const ELEMENT_OLD_PASSWORD_NAME = 'old_password';
 	const ELEMENT_OLD_PASSWORD_LABEL = 'Old password';
 	const ELEMENT_NEW_PASSWORD_NAME = 'new_password';
@@ -16,7 +16,7 @@ class PasswordForm extends \Framework\Forms\Form {
 	const ELEMENT_SUBMIT_VALUE = 'Change';
 
 	public function initialize() {
-		$this->setAction(self::FORM_ACTION.'/'.$this->getValue('id'));
+		$this->setAction($this->_getFormAction().'/'.$this->getValue('id'));
 
 		// hidden user_id
 		$element = new \Framework\Forms\Element\HiddenUserID();
@@ -52,4 +52,7 @@ class PasswordForm extends \Framework\Forms\Form {
 		$this->add($element);
 	}
 
+	protected function _getAction() {
+		return self::ACTION;
+	}
 }

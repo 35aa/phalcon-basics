@@ -2,14 +2,14 @@
 
 namespace ProfileForm;
 
-class UsernameForm extends \Framework\Forms\Form {
+class UsernameForm extends AbstractForm {
 
-	const FORM_ACTION = 'profile/username';
+	const ACTION = 'username';
 	const ELEMENT_SUBMIT_VALUE = 'Update';
 
 	public function initialize() {
 		// e.g. profile/username/6540a8e347ed821ddf602b3bf6388359
-		$this->setAction(self::FORM_ACTION.'/'.$this->getValue('id'));
+		$this->setAction($this->_getFormAction().'/'.$this->getValue('id'));
 
 		// hidden user_id
 		$element = new \Framework\Forms\Element\HiddenUserID();
@@ -26,4 +26,7 @@ class UsernameForm extends \Framework\Forms\Form {
 		$this->add($element);
 	}
 
+	protected function _getAction() {
+		return self::ACTION;
+	}
 }

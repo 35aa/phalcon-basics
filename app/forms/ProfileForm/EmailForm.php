@@ -2,13 +2,13 @@
 
 namespace ProfileForm;
 
-class EmailForm extends \Framework\Forms\Form {
+class EmailForm extends AbstractForm {
 
-	const FORM_ACTION = 'profile/email';
+	const ACTION = 'email';
 	const ELEMENT_SUBMIT_VALUE = 'Add';
 
 	public function initialize() {
-		$this->setAction(self::FORM_ACTION.'/'.$this->getValue('id'));
+		$this->setAction($this->_getFormAction().'/'.$this->getValue('id'));
 
 		// hidden user_id
 		$element = new \Framework\Forms\Element\HiddenUserID();
@@ -25,4 +25,7 @@ class EmailForm extends \Framework\Forms\Form {
 		$this->add($element);
 	}
 
+	protected function _getAction() {
+		return self::ACTION;
+	}
 }

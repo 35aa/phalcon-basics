@@ -2,13 +2,13 @@
 
 namespace ProfileForm;
 
-class DeleteEmailForm extends \Framework\Forms\Form {
+class DeleteEmailForm extends AbstractForm {
 
-	const FORM_ACTION = 'profile/deleteemail';
+	const ACTION = 'deleteemail';
 	const ELEMENT_ID = 'id';
 
 	public function initialize() {
-		$this->setAction(self::FORM_ACTION);
+		$this->setAction($this->_getFormAction());
 
 		$element = new \Phalcon\Forms\Element\Text(self::ELEMENT_ID);
 		$element->addValidators(array(
@@ -19,4 +19,7 @@ class DeleteEmailForm extends \Framework\Forms\Form {
 
 	}
 
+	protected function _getAction() {
+		return self::ACTION;
+	}
 }

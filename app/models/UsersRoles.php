@@ -15,4 +15,5 @@ class UsersRoles extends \Phalcon\Mvc\Model {
 	public function initialize() {
 		$this->hasOne('id', 'Users', 'role_id');
 	}
+
 }
