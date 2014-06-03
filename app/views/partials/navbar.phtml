@@ -12,12 +12,12 @@
 		<div class="collapse navbar-collapse">
 <?
 if ($this->session->get('auth')->isAuthenticated() 
-	&& $this->session->get('auth')->getUserRole() != 'Guest') {
+	&& $this->session->get('auth')->getUserRole() != UsersRoles::ROLE_GUEST) {
 ?>
 			<ul class="nav navbar-nav">
 				<li><a href="/home">Home</a></li>
 <?
-if ($this->session->get('auth')->getUserRole() == 'Administrator') {
+if ($this->session->get('auth')->getUserRole() == UsersRoles::ROLE_ADMINISTRATOR) {
 ?>
 				<li><a href="/useradmin">Users</a></li>
 <? } ?>
@@ -26,9 +26,7 @@ if ($this->session->get('auth')->getUserRole() == 'Administrator') {
 			<ul class="nav navbar-nav navbar-right">
 <?
 if ($this->session->get('auth')->isAuthenticated()) {
-?>
-<?
-if ($this->session->get('auth')->getUserRole() != 'Guest') {
+if ($this->session->get('auth')->getUserRole() != UsersRoles::ROLE_GUEST) {
 ?>
 				<li><a href="/profile">Profile</a></li>
 <? } ?>
