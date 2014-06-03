@@ -43,15 +43,14 @@ class ProfileController extends \Framework\AbstractController {
 			$password = (Object) Array();
 			if ($this->view->form->isValid($this->getDI()->getRequest()->getPost(), $password)) {
 				$passwordChanged = $user->changeUserPassword($password);
-				// redirect to sing up confirmation page
-				if ($passwordChanged) return $this->view->pick($this->dispatcher->getControllerName().'/password_confirmation');
+				$this->view->messages->addSuccess('Password was changed successfully!');
 			}
 			else {
 				$this->view->messages->addError('Please, fix errors and try again!');
-				$this->view->form->get('old_password')->clear();
-				$this->view->form->get('new_password')->clear();
-				$this->view->form->get('confirmPassword')->clear();
 			}
+			$this->view->form->get('old_password')->clear();
+			$this->view->form->get('new_password')->clear();
+			$this->view->form->get('confirmPassword')->clear();
 		}
 	}
 
