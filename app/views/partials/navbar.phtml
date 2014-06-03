@@ -10,14 +10,30 @@
 			<a class="navbar-brand" href="/">G44</a>
 		</div>
 		<div class="collapse navbar-collapse">
+<?
+if ($this->session->get('auth')->isAuthenticated() 
+	&& $this->session->get('auth')->getUserRole() != 'Guest') {
+?>
 			<ul class="nav navbar-nav">
 				<li><a href="/home">Home</a></li>
+<?
+if ($this->session->get('auth')->getUserRole() == 'Administrator') {
+?>
 				<li><a href="/useradmin">Users</a></li>
+<? } ?>
 			</ul>
+<? } ?>
 			<ul class="nav navbar-nav navbar-right">
-<? if ($this->session->get('auth')->isAuthenticated()) {?>
+<?
+if ($this->session->get('auth')->isAuthenticated()) {
+?>
+<?
+if ($this->session->get('auth')->getUserRole() != 'Guest') {
+?>
 				<li><a href="/profile">Profile</a></li>
+<? } ?>
 				<li><a href="/signout/index">Sign Out</a></li>
+
 <? } else { ?>
 				<li><a href="/register/index">Sign Up</a></li>
 				<li><a href="/login/index">Sign In</a></li>
