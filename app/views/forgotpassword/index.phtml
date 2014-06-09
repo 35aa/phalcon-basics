@@ -1,3 +1,5 @@
+<?=$this->view->getVar('breadcrumbs')->render()?>
+
 <h1 class="page-header">Forgot Password</h1>
 <?=$this->partial('partials/messages')?>
 <?=\Phalcon\Tag::form(array($this->view->form->getAction())) ?>

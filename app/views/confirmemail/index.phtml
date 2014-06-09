@@ -1,3 +1,5 @@
+<?=$this->view->getVar('breadcrumbs')->render()?>
+
 <h1 class="page-header">Email verification</h1>
 <?if ($this->view->getVar('user')) {?>
 <p>Thank you <?=$this->view->getVar('escaper')->escapeHtml($this->view->getVar('user')->name)?></p>

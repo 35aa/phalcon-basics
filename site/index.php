@@ -1,6 +1,7 @@
 <?php
 
 DEFINE('APP_PATH', __DIR__.'/..');
+DEFINE('TEMPLATE_DIR', APP_PATH.'/app/views/');
 
 date_default_timezone_set('Europe/Kiev');
 try {
@@ -38,6 +39,8 @@ try {
 
 	//add dispatcher which handle wrong controllers and actions and other errors
 	$di->set('dispatcher', call_user_func('InitApp::initDispatcher'), true);
+
+	$di->set('breadcrumbs', call_user_func('InitApp::initBreadcrumbs'), true);
 
 	//Handle the request
 	$application = new \Phalcon\Mvc\Application($di);
