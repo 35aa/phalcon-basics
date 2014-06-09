@@ -43,33 +43,21 @@ class Breadcrumbs {
 				),
 				'username' => array(
 					$this->_getHomeCrumb(), 
-					array(
-						'name' => 'Profile',
-						'controller' => 'profile', 
-						'action' => 'index'
-					),
+					$this->_getProfileIndexCrumb(),
 					array(
 						'name' => 'Change username'
 					)
 				),
 				'password' => array(
 					$this->_getHomeCrumb(), 
-					array(
-						'name' => 'Profile',
-						'controller' => 'profile', 
-						'action' => 'index'
-					),
+					$this->_getProfileIndexCrumb(),
 					array(
 						'name' => 'Change password'
 					)
 				),
 				'email' => array(
 					$this->_getHomeCrumb(), 
-					array(
-						'name' => 'Profile',
-						'controller' => 'profile', 
-						'action' => 'index'
-					),
+					$this->_getProfileIndexCrumb(),
 					array(
 						'name' => 'Add new email'
 					)
@@ -86,59 +74,31 @@ class Breadcrumbs {
 			'profileadmin' => array(
 				'index' => array(
 					$this->_getHomeCrumb(), 
-					array(
-						'name' => 'Users',
-						'controller' => 'useradmin',
-						'action' => 'index'
-					),
+					$this->_getUseradminIndexCrumb(),
 					array(
 						'name' => $this->_getUserNameById()
 					)
 				),
 				'username' => array(
 					$this->_getHomeCrumb(), 
-					array(
-						'name' => 'Users',
-						'controller' => 'useradmin',
-						'action' => 'index'
-					),
-					array(
-						'name' => $this->_getUserNameById(),
-						'controller' => 'profileadmin',
-						'action' => 'index/'.array_shift($this->_dispatcher->getParams())
-					),
+					$this->_getUseradminIndexCrumb(),
+					$this->_getUseradminUsernameCrumb(),
 					array(
 						'name' => 'Change username'
 					)
 				),
 				'password' => array(
 					$this->_getHomeCrumb(), 
-					array(
-						'name' => 'Users',
-						'controller' => 'useradmin',
-						'action' => 'index'
-					),
-					array(
-						'name' => $this->_getUserNameById(),
-						'controller' => 'profileadmin',
-						'action' => 'index/'.array_shift($this->_dispatcher->getParams())
-					),
+					$this->_getUseradminIndexCrumb(),
+					$this->_getUseradminUsernameCrumb(),
 					array(
 						'name' => 'Change password'
 					)
 				),
 				'email' => array(
 					$this->_getHomeCrumb(), 
-					array(
-						'name' => 'Users',
-						'controller' => 'useradmin',
-						'action' => 'index'
-					),
-					array(
-						'name' => $this->_getUserNameById(),
-						'controller' => 'profileadmin',
-						'action' => 'index/'.array_shift($this->_dispatcher->getParams())
-					),
+					$this->_getUseradminIndexCrumb(),
+					$this->_getUseradminUsernameCrumb(),
 					array(
 						'name' => 'Add new email'
 					)
@@ -204,6 +164,30 @@ class Breadcrumbs {
 			'name' => 'Home', 
 			'controller' => 'index', 
 			'action' => 'index'
+		);
+	}
+
+	protected function _getProfileIndexCrumb() {
+		return array(
+			'name' => 'Profile',
+			'controller' => 'profile', 
+			'action' => 'index'
+		);
+	}
+
+	protected function _getUseradminIndexCrumb() {
+		return array(
+			'name' => 'Users',
+			'controller' => 'useradmin',
+			'action' => 'index'
+		);
+	}
+
+	protected function _getUseradminUsernameCrumb() {
+		return array(
+			'name' => $this->_getUserNameById(),
+			'controller' => 'profileadmin',
+			'action' => 'index/'.array_shift($this->_dispatcher->getParams())
 		);
 	}
 
