@@ -1,7 +1,6 @@
 <?
 
 namespace Mail;
-define('TEMPLATE_DIR', APP_PATH.'/app/views/');
 
 class Mail {
 

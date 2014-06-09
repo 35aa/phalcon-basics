@@ -1,5 +1,7 @@
 <?php use Phalcon\Tag as Tag; ?>
 
+<?=$this->view->getVar('breadcrumbs')->render()?>
+
 <h1 class="page-header">Manual email activation</h1>
 
 <?=Tag::form(array($this->view->form->getAction())) ?>
