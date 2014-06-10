@@ -96,30 +96,13 @@ class Users extends \Phalcon\Mvc\Model {
 	}
 
 	public function setUserActive() {
-		// activate user
 		$this->active = 1;
 		$this->save();
-		// activate all users emails
-		$usersEmails = new UsersEmails();
-		$emails = $usersEmails->getDeletedEmailsForUser($this->id);
-		foreach ($emails as $email) {
-			if ($email->verified) {
-				$email->setEmailRestored();
-			}
-		}
 	}
 
 	public function setUserDeleted() {
-		// set user as deactivated
 		$this->active = 0;
 		$this->save();
-		// set all emails as deleted
-		$usersEmails = new UsersEmails();
-		// restore only verified emails
-		$emails = $usersEmails->getEmailsForUser($this->id);
-		foreach ($emails as $email) {
-			$email->setEmailDeleted();
-		}
 	}
 
 	public function getUserByPrimaryEmailAndPass($email, $password) {
