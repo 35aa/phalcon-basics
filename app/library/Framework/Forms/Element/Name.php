@@ -14,6 +14,7 @@ Class Name extends \Phalcon\Forms\Element\Text {
 	const ELEMENT_VALIDATOR_STRINGLENGTH_MIN = 3;
 	const ELEMENT_VALIDATOR_STRINGLENGTH_MAX_MESSAGE = 'This name is too long. Please, select another one.';
 	const ELEMENT_VALIDATOR_STRINGLENGTH_MIN_MESSAGE = 'This name is too short. Please, select another one.';
+	const ELEMENT_VALIDATOR_REGEX_PATTERN = '/^[a-zA-Z0-9]{3,70}$/';
 
 	public function __construct() {
 		parent::__construct(self::ELEMENT_NAME, array(
@@ -24,6 +25,8 @@ Class Name extends \Phalcon\Forms\Element\Text {
 		$this->addValidators(array(
 				new \Phalcon\Validation\Validator\PresenceOf(array(
 						'message' => self::ELEMENT_VALIDATOR_PRESENCEOF_MESSAGE)),
+				new \Phalcon\Validation\Validator\Regex(array(
+						'pattern' => self::ELEMENT_VALIDATOR_REGEX_PATTERN )),
 				new \Phalcon\Validation\Validator\StringLength(array(
 						'max' => self::ELEMENT_VALIDATOR_STRINGLENGTH_MAX,
 						'min' => self::ELEMENT_VALIDATOR_STRINGLENGTH_MIN,
