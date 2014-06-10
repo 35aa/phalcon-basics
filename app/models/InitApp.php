@@ -92,7 +92,7 @@ class InitApp {
 		else {
 			//Private area resources
 			$userResources = array(
-				'profile' => array('index', 'username', 'password', 'email', 'deleteemail', 'setprimaryemail'),
+				'profile' => array('index', 'username', 'password', 'email', 'deleteemail', 'setprimaryemail', 'deactivate'),
 				'home' => array('index') );
 
 			//Public area resources
@@ -129,4 +129,11 @@ class InitApp {
 		}
 		return $acl;
 	}
+
+	public static function initBreadcrumbs() {
+		$breadcrumbs = new \Framework\Breadcrumbs(\Phalcon\DI::getDefault()->get('dispatcher'));
+		$view = \Phalcon\DI::getDefault()->get('view');
+		$view->setVar('breadcrumbs', $breadcrumbs);
+	}
+
 }
