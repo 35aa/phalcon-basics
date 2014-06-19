@@ -102,6 +102,14 @@ class Breadcrumbs {
 					array(
 						'name' => 'Add new email'
 					)
+				),
+				'role' => array(
+					$this->_getHomeCrumb(), 
+					$this->_getUseradminIndexCrumb(),
+					$this->_getUseradminUsernameCrumb(),
+					array(
+						'name' => 'Change role'
+					)
 				)
 			), // end profileadmin
 			'forgotpassword' => array(

@@ -1,0 +1,26 @@
+<? use Phalcon\Tag as Tag; ?>
+
+<?=$this->view->getVar('breadcrumbs')->render()?>
+
+<h1 class="page-header">Change role</h1>
+<?=$this->partial('partials/messages')?>
+<?=Tag::form(array($this->view->form->getAction())) ?>
+
+	<div class="form-group">
+		<label for="<?=$form->get('role_id')->getName()?>"><?=$form->get('role_id')->getLabel()?>:</label>
+<?=$form->render('id') ?>
+<?=$form->render('role_id') ?>
+		<span class="help-block">
+<?
+	if ($form->hasMessagesFor($form->get('role_id')->getName())) {
+		echo $this->view->getVar('escaper')->escapeHtml($form->getMessagesFor($form->get('role_id')->getName())->offsetGet(0)->getMessage());
+	}
+?>
+		</span>
+	</div>
+
+	<div class="form-group">
+<?=$form->render('submit') ?>
+	</div>
+
+<?=Tag::endForm ()?>

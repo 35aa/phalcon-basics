@@ -66,6 +66,9 @@ if (!$email->is_primary) {
 	<!-- List group -->
 	<div class="panel-body">
 <?=$this->view->getVar('user')->getUsersRoles()->role?>
+		<div class="pull-right">
+			<a href='/profileadmin/role/<?=$this->view->getVar('user')->id?>' type="button" class="btn btn-danger btn-xs">Edit</a>
+		</div>
 	</div>
 </div>
 
