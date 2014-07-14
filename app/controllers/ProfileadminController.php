@@ -23,10 +23,7 @@ class ProfileadminController extends ProfileController {
 			$role = (Object) Array();
 			if ($this->view->form->isValid($this->getDI()->getRequest()->getPost(), $role)) {
 				$user->setNewRole($role);
-				return $this->dispatcher->forward(
-					array(
-						'controller' => 'profileadmin',
-						'action' => 'index') );
+				$this->view->messages->addSuccess('Role was changed successfully!');
 			} else {
 				$this->view->messages->addError('Please, fix errors and try again!');
 			}
