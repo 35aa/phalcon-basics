@@ -144,6 +144,11 @@ class Users extends \Phalcon\Mvc\Model {
 		}
 	}
 
+	public function setNewRole($role) {
+		$this->role_id = $role->role_id;
+		$this->update();
+	}
+
 	public function getAllUsers() {
 		return self::find();
 	}
