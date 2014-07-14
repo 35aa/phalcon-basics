@@ -15,7 +15,6 @@ if ($this->session->get('auth')->isAuthenticated()
 	&& $this->session->get('auth')->getUserRole() != UsersRoles::ROLE_GUEST) {
 ?>
 			<ul class="nav navbar-nav">
-				<li><a href="/home">Home</a></li>
 <?
 if ($this->session->get('auth')->getUserRole() == UsersRoles::ROLE_ADMINISTRATOR) {
 ?>
