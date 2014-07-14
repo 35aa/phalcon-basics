@@ -8,7 +8,6 @@ class PasswordAdminForm extends AbstractForm {
 	const ELEMENT_NEW_PASSWORD_NAME = 'new_password';
 	const ELEMENT_NEW_PASSWORD_LABEL = 'New password';
 	const ELEMENT_NEW_PASSWORD_MESSAGE = 'Password doesn\'t match confirmation';
-	const ELEMENT_NEW_PASSWORD_WITH_ELEMENT_ID = 'confirmPassword';
 	const ELEMENT_CONFIRM_PASSWORD_NAME = 'confirmPassword';
 	const ELEMENT_CONFIRM_PASSWORD_LABEL = 'Repeat new password';
 	const ELEMENT_SUBMIT_VALUE = 'Change';
@@ -27,7 +26,7 @@ class PasswordAdminForm extends AbstractForm {
 		$element->addValidators(array(
 				new \Phalcon\Validation\Validator\Confirmation(array(
 						'message' => self::ELEMENT_NEW_PASSWORD_MESSAGE,
-						'with' => self::ELEMENT_NEW_PASSWORD_WITH_ELEMENT_ID
+						'with' => self::ELEMENT_CONFIRM_PASSWORD_NAME
 				))
 		));
 		$this->add($element);

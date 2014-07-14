@@ -22,7 +22,7 @@ class ProfileadminController extends ProfileController {
 		if ($this->getDI()->getRequest()->isPost()) {
 			$password = (Object) Array();
 			if ($this->view->form->isValid($this->getDI()->getRequest()->getPost(), $password)) {
-				$passwordChanged = $user->saveNewPassword($password->new_password);
+				$user->saveNewPassword($password->new_password);
 				$this->view->messages->addSuccess('Password was changed successfully!');
 			}
 			else {
