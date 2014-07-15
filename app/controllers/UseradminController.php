@@ -10,8 +10,9 @@ class UseradminController extends \Framework\AbstractController {
 	}
 
 	public function indexAction() {
-		$users = new \Users();
-		$this->view->setVar('users', $users->getAllUsers());
+		$pageNumber = intval($this->getDI()->getRequest()->get('pageNumber'));
+		$paginator = new \Framework\Paginator\Adapter\ModelTable(array('pageNumber' => $pageNumber, 'dataProvider' => new \Users(), 'itemsPerPage' => 5));
+		$this->view->setVar('users', $paginator);
 	}
 
 }
