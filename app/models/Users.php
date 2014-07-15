@@ -1,6 +1,6 @@
 <?php
 
-class Users extends \Phalcon\Mvc\Model {
+class Users extends \Phalcon\Mvc\Model implements \Framework\Paginator\Adapter\DataProviderInterface {
 
 	const FIELD_ID = 'id';
 	const TABLE_USERS_ROLES = 'UsersRoles';
@@ -153,4 +153,11 @@ class Users extends \Phalcon\Mvc\Model {
 		return self::find();
 	}
 
+	public function getCount() {
+		return self::count();
+	}
+
+	public function getItemsWithOffsetAndLimit($offset = 0, $limit = 0) {
+		return self::find(array('limit' => array('number' => $limit, 'offset' => $offset)));
+	}
 }

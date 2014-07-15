@@ -3,7 +3,7 @@
 <h1 class="page-header">Users</h1>
 
 <div class="list-group">
-<? foreach ($this->view->getVar('users') as $user) {?>
+<? foreach ($this->view->getVar('users')->getPaginate() as $user) {?>
 	<a href="/profileadmin/index/<?=$user->id?>" class="list-group-item">
 		<img class="pull-left" style="margin-right: 15px;" height="64" src="https://avatars0.githubusercontent.com/u/5111142?s=140" width="64">
 		<p class="list-group-item-heading">
@@ -32,3 +32,12 @@ if (!$user->getPrimaryEmail()->verified) {
 	</a>
 <? } ?>
 </div>
+<ul class="pager">
+  <li class="previous<?=$this->view->getVar('users')->getPreviousPage() ? '' : ' disabled'?>">
+    <a href="<?=$this->view->getVar('users')->getPreviousPage() ? '&pageNumber='.$this->view->getVar('users')->getPreviousPage() : '#'?>">&larr; Back</a>
+  </li>
+  <li class="text-muted">Current page is <?=$this->view->getVar('users')->getCurrentPage()?> from <?=$this->view->getVar('users')->getNumberOfPages()?></li>
+  <li class="next<?=$this->view->getVar('users')->getNextPage() ? '' : ' disabled'?>">
+    <a href="<?=$this->view->getVar('users')->getNextPage() ? '/useradmin/&pageNumber='.$this->view->getVar('users')->getNextPage() : '#'?>">Forward &rarr;</a>
+  </li>
+</ul>
